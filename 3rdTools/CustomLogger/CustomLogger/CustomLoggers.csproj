@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="6.1.0" />
+    <PackageReference Include="NEST" Version="7.17.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Log4Net\Log4NetAdoNetAppender\Log4NetAdoNetAppender.csproj" />
+    <ProjectReference Include="..\..\Log4Net\Log4NetElasticAppender\Log4NetElasticAppender.csproj" />
+    <ProjectReference Include="..\..\Log4Net\Log4NetEmailAppender\Log4NetEmailAppender.csproj" />
+    <ProjectReference Include="..\CustomLogger.Contract\CustomLoggers.Contract.csproj" />
+  </ItemGroup>
+
+</Project>
