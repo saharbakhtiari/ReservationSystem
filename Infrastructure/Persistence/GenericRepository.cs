@@ -43,6 +43,16 @@ namespace Infrastructure.Persistence
             await _dbContext.Set<TEntity>().AddRangeAsync(entities);
             await _dbContext.SaveChangesAsync();
         }
+        public async Task UpdateRangeAsync(IEnumerable<TEntity> entities)
+        {
+            _dbContext.Set<TEntity>().UpdateRange(entities);
+            await _dbContext.SaveChangesAsync();
+        }
+        public async Task RemoveRangeAsync(IEnumerable<TEntity> entities)
+        {
+            _dbContext.Set<TEntity>().RemoveRange(entities);
+            await _dbContext.SaveChangesAsync();
+        }
 
         public async Task DeleteAllAsync()
         {

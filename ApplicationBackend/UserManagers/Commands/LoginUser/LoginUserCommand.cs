@@ -20,13 +20,7 @@ namespace Application_Backend.UserManagers.Commands.LoginUser
         {
             await _userManager.AuthenticateAsync(request.UserName.Trim(), request.Password.Trim());
 
-            string accessToken = await _userManager.GetUserTokenIdAsync(request.UserName.Trim());
-
-            TokenDto tokenDto=new TokenDto();
-            tokenDto.expires_in = 2222;
-            tokenDto.access_token = accessToken;
-            tokenDto.refreshToken= accessToken;
-            return tokenDto;
+            return await _userManager.GetUserTokenIdAsync(request.UserName.Trim());
         }
     }
 }

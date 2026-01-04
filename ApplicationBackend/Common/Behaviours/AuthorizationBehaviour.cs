@@ -31,7 +31,7 @@ namespace Application_Backend.Common.Behaviours
             _requestOrginService = ServiceLocator.ServiceProvider.GetService<IRequestOrginService>(); //accountService;
         }
 
-        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             var authorizeAttributes = request.GetType()
                 .GetCustomAttributes<AuthorizeAttribute>();
@@ -43,7 +43,10 @@ namespace Application_Backend.Common.Behaviours
                 {
                     throw new UnauthorizedAccessException();
                 }
-
+                if ((await _accountService.IsValidToken(_currentUserService.UserId.Value, _currentUserService.UserKey.Value)).Not())
+                {
+                    throw new UnauthorizedAccessException();
+                }
                 var authorizeAttributesWithAccess = authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Roles) || !string.IsNullOrWhiteSpace(a.Permissions));
 
                 if (authorizeAttributesWithAccess.Any())

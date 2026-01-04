@@ -1,9 +1,9 @@
+using log4stash.Filters;
+using log4stash.InnerExceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using log4stash.Filters;
-using log4stash.InnerExceptions;
 
 namespace log4stash
 {
@@ -41,7 +41,7 @@ namespace log4stash
         {
             _filters.Add(filter);
         }
-        
+
         public static void ValidateFilterProperties(IElasticAppenderFilter filter)
         {
             var invalidProperties =
@@ -59,7 +59,7 @@ namespace log4stash
 
         private static bool IsValidProperty(PropertyInfo prop, IElasticAppenderFilter filter)
         {
-            var validation = prop.GetCustomAttributes(typeof (IPropertyValidationAttribute), true).FirstOrDefault() as IPropertyValidationAttribute;
+            var validation = prop.GetCustomAttributes(typeof(IPropertyValidationAttribute), true).FirstOrDefault() as IPropertyValidationAttribute;
             if (validation == null)
             {
                 return true;

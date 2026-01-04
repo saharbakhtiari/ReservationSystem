@@ -19,20 +19,21 @@ namespace WebAppBlazor.Server.Controllers.V1
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true, Duration = 0)]
         [EnableRateLimiting(DNTCaptchaRateLimiterPolicy.Name)] // don't forget this one!
         public ActionResult<DNTCaptchaApiResponse> CreateDNTCaptchaParams() =>
-         // Note: For security reasons, a JavaScript client shouldn't be able to provide these attributes directly.
-         // Otherwise an attacker will be able to change them and make them easier!
-         _apiProvider.CreateDNTCaptcha(new DNTCaptchaTagHelperHtmlAttributes
-         {
-             BackColor = "#fffff",
-             FontName = "Tahoma",
-             FontSize = 42,
-             ForeColor = "#000000",
-
-             Language = Language.Persian,
-             DisplayMode = DisplayMode.ShowDigits,
-             Max = 9999,
-             Min = 1000,
-             UseRelativeUrls = true
-         });
+        // Note: For security reasons, a JavaScript client shouldn't be able to provide these attributes directly.
+        // Otherwise an attacker will be able to change them and make them easier!
+        _apiProvider.CreateDNTCaptcha(new DNTCaptchaTagHelperHtmlAttributes
+        {
+            BackColor = "#fffff",
+            FontName = "Tahoma",
+            FontSize = 42,
+            ForeColor = "#000000",
+            
+            Language = Language.Persian,
+            DisplayMode = DisplayMode.ShowDigits,
+            Max = 9999,
+            Min = 1000,
+            UseRelativeUrls = false
+        });
+        
     }
 }

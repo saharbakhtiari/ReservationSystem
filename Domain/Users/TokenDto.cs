@@ -8,10 +8,10 @@ namespace Domain.Users
 {
     public class TokenDto
     {
-       public string access_token { get; set; }
-        public string refreshToken { get; set; }
+       public string AccessToken { get; set; }
+        public string RefreshToken { get; set; }
 
-        public int expires_in { get; set; }
+        public DateTime ExpiresTime { get; set; }
        
     }
 }

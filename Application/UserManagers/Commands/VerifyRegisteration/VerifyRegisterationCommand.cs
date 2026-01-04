@@ -7,7 +7,6 @@ namespace Application.UserManagers.Commands.VerifyRegisteration
     public class VerifyRegisterationCommand : IRequest<TokenDto>
     {
         public string PhoneNumber { get; set; }
-        public string NationalId { get; set; }
         public string VerifyCode { get; set; }
     }
 }

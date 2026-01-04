@@ -70,7 +70,7 @@ namespace WebAppBlazor.Server.Filters
             {
                 Status = StatusCodes.Status500InternalServerError,
                 Title = "An error occurred while processing your request.",
-                Detail = "An error occurred while processing your request. Please Contact With Administrator",
+                Detail = context.Exception.ToJson(),
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1"
             };
 

@@ -29,7 +29,7 @@ namespace Application_Backend.Common.Behaviours
             _accountService = ServiceLocator.ServiceProvider.GetService<IUserManager>(); //accountService;
         }
 
-        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        public async  Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             _timer.Start();
 

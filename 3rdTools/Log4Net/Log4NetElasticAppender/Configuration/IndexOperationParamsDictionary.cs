@@ -30,7 +30,7 @@ namespace log4stash.Configuration
         {
             stringValue = null;
             LogEventSmartFormatter value;
-            if(_parametersDictionary.TryGetValue(key, out value))
+            if (_parametersDictionary.TryGetValue(key, out value))
             {
                 stringValue = value.Raw;
                 return true;

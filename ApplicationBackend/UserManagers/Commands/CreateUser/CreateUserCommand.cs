@@ -1,7 +1,7 @@
 ﻿using Application.UserManagers.Commands.CreateUser;
 using AutoMapper;
-using Domain.Common;
 using Domain.MemberProfiles;
+using Domain.Common;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;

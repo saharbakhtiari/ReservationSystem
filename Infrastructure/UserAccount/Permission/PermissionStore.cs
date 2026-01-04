@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.UserAccount.Permission
 {
-    public class PermissionStore<TKey, TRole, TUser, TContext,TPermission>
+    public class PermissionStore<TKey, TRole, TUser, TContext, TPermission>
         where TUser : IdentityUser<TKey>
         where TPermission : IdentityPermission<TKey, TPermission, TRole>
         where TRole : IdentityRole<TKey, TPermission, TRole>
@@ -43,7 +43,7 @@ namespace Infrastructure.UserAccount.Permission
             {
                 return;
             }
-            
+
             await Permissions.AddAsync(permission, cancellationToken);
             await Context.SaveChangesAsync(cancellationToken);
         }
@@ -53,24 +53,24 @@ namespace Infrastructure.UserAccount.Permission
         }
         public virtual Task<TPermission> GetPermissionAsync(string permissionName, CancellationToken cancellationToken = default)
         {
-            return Permissions.Include(x=>x.Roles).FirstAsync(x => x.Name.ToUpper() == permissionName.ToUpper(), cancellationToken);
+            return Permissions.Include(x => x.Roles).FirstAsync(x => x.Name.ToUpper() == permissionName.ToUpper(), cancellationToken);
         }
         public virtual Task<TPermission> GetPermissionByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             return Permissions.Include(x => x.Roles).FirstAsync(x => x.Id.ToString() == id, cancellationToken);
         }
-        
-        public virtual Task<List<TPermission>> GetNotExistPermission(List<string> permissionsName ,CancellationToken cancellationToken = default)
+
+        public virtual Task<List<TPermission>> GetNotExistPermission(List<string> permissionsName, CancellationToken cancellationToken = default)
         {
             var uppercasePermission = permissionsName.Select(x => x.ToUpper()).ToList();
             return Permissions.AsNoTracking().Where(x => !uppercasePermission.Contains(x.Name.ToUpper())).ToListAsync(cancellationToken);
         }
-        public virtual Task<List<TPermission>> GetAllPermissions( CancellationToken cancellationToken = default)
+        public virtual Task<List<TPermission>> GetAllPermissions(CancellationToken cancellationToken = default)
         {
-           
+
             return Permissions.AsNoTracking().ToListAsync(cancellationToken);
         }
-        public virtual Task DeleteNotExistPermission(List<string> permissionsName ,CancellationToken cancellationToken = default)
+        public virtual Task DeleteNotExistPermission(List<string> permissionsName, CancellationToken cancellationToken = default)
         {
             var uppercasePermission = permissionsName.Select(x => x.ToUpper()).ToList();
             return Permissions.AsNoTracking().Where(x => !uppercasePermission.Contains(x.Name.ToUpper())).BatchDeleteAsync(cancellationToken);

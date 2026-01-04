@@ -19,6 +19,7 @@ using SmsService.Contract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -151,12 +152,12 @@ namespace Infrastructure.UserAccount
 
         public async Task SendLoginOtpCodeAsync(string phoneNumber, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByNameAsync(phoneNumber);
-            if (user is null)
-            {
-                //throw new UserFriendlyException($"کاربری با شماره موبایل وارد شده وجود ندارد");
-                return;
-            }
+            //var user = await _userManager.FindByNameAsync(phoneNumber);
+            //if (user is null)
+            //{
+            //    //throw new UserFriendlyException($"کاربری با شماره موبایل وارد شده وجود ندارد");
+            //    return;
+            //}
             var code = GenerateCode(5);
             SeoSms sms = new SeoSms()
             {
@@ -188,7 +189,7 @@ namespace Infrastructure.UserAccount
             return builder.ToString();
         }
 
-        public async Task<Guid> RegisterUser(string phoneNumber, string nationalId, CancellationToken cancellationToken)
+        public async Task<Guid> RegisterUser(string phoneNumber, CancellationToken cancellationToken)
         {
 
             var user = await _userManager.FindByNameAsync(phoneNumber);
@@ -205,7 +206,6 @@ namespace Infrastructure.UserAccount
                 LoginProvider = LoginProvider.BasicAuthentication,
                 PhoneNumberConfirmed = true,
                 EmailConfirmed = true,
-                EmployeeNumber = nationalId
             };
             var result = await userStoreProvider.CreateUserAsync(newUser);
             if (!result.Succeeded)
@@ -217,7 +217,7 @@ namespace Infrastructure.UserAccount
 
         public async Task VerifyOtpAsync(string phoneNumber, string verifyCode, CancellationToken cancellationToken)
         {
-            var sms = await SeoSms.GetSmsAsync(phoneNumber, cancellationToken) ?? throw new UserFriendlyException($"هویت شما احراز نشد");
+            var sms = await SeoSms.GetSmsAsync(phoneNumber, cancellationToken) ?? throw new UserFriendlyException($"هویت شما احراز نشد"); ;
             if (DateTime.Now > sms.ExpireDate)
             {
                 throw new UserFriendlyException($"زمان ثبت کد به پایان رسید");
@@ -618,24 +618,33 @@ namespace Infrastructure.UserAccount
             using (var uow = _uowManager.Begin(new SedUnitOfWorkOptions { IsTransactional = false, Timeout = TimeSpan.FromMinutes(1) }, requiresNew: true))
             {
                 var signInManager = ServiceLocator.ServiceProvider.GetService<SignInManager<ApplicationUser>>();
-                var userData = await _userManager.FindByNameAsync(userName) ?? throw new UserFriendlyException($"هویت شما احراز نشد"); ;
+                var userData = await _userManager.FindByNameAsync(userName) ?? throw new UserFriendlyException($"هویت شما احراز نشد");
                 await signInManager.SignInAsync(userData, isPersistent: false);
             }
         }
 
-        public async Task<string> GetUserTokenIdAsync(string userName)
+        public async Task<TokenDto> GetUserTokenIdAsync(string userName)
         {
             using (var uow = _uowManager.Begin(new SedUnitOfWorkOptions { IsTransactional = true, Timeout = TimeSpan.FromMinutes(1) }, requiresNew: true))
             {
                 var user = await _userManager.Users.FirstAsync(u => u.UserName == userName);
-                user.IsLogin = true;
+                var accessToken = await _jwtGenerator.GenerateJwtAsync(user);
+                var refereshToken = GenerateRefreshToken();
+                user.RefreshToken = refereshToken;
+                _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
+                var expireTime = DateTime.Now.AddDays(refreshTokenValidityInDays);
+                user.RefreshTokenExpiryTime = expireTime;
                 var result = await _userManager.UpdateAsync(user);
                 if (!result.Succeeded)
                 {
                     throw new UserFriendlyException($"درخواست شما با خطا مواجه شد");
                 }
-                var token = await _jwtGenerator.GenerateJwtAsync(user);
-                return token;
+                return new()
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refereshToken,
+                    ExpiresTime = expireTime
+                };
             }
         }
 
@@ -854,38 +863,17 @@ namespace Infrastructure.UserAccount
             {
                 throw new UserFriendlyException("کاربری با شناسه اعلامی یافت نشد");
             }
+
+            var userStoreProvider = ServiceLocator.ServiceProvider.GetServiceProvider().GetServiceWithName<IUserStoreProvider>(userData.LoginProvider.ToString());
             if (userData.PasswordHash.IsNullOrEmpty().Not())
             {
                 throw new UserFriendlyException("امکان تخصیص پسورد وجود ندارد");
             }
-            var userStoreProvider = ServiceLocator.ServiceProvider.GetServiceProvider().GetServiceWithName<IUserStoreProvider>(userData.LoginProvider.ToString());
             var result = await userStoreProvider.SetPasswordAsync(userData, password);
             if (!result)
             {
                 throw new UserFriendlyException("تخصیص پسورد با خطا مواجه گردید");
             }
-        }
-
-        public async Task<Guid> RegisterUser(UserInputDto userDto, CancellationToken cancellationToken)
-        {
-            var userStoreProvider = ServiceLocator.ServiceProvider.GetServiceProvider().GetServiceWithName<IUserStoreProvider>(LoginProvider.BasicAuthentication.ToString());
-            ApplicationUser newUser = new ApplicationUser()
-            {
-                UserName = userDto.PhoneNumber,
-                PhoneNumber = userDto.PhoneNumber,
-                FirstName = userDto.FirstName,
-                LastName = userDto.LastName,
-                Email = userDto.Email ?? $"{Guid.NewGuid()}@seo.ir",
-                LoginProvider = LoginProvider.BasicAuthentication,
-                PhoneNumberConfirmed = true,
-                EmailConfirmed = true,
-            };
-            var result = await userStoreProvider.CreateUserAsync(newUser);
-            if (!result.Succeeded)
-            {
-                throw new UserFriendlyException($"Can not Create User {String.Join(",", result.Errors.Select(x => x.Code))}");
-            }
-            return (await _userManager.FindByNameAsync(userDto.PhoneNumber)).Id;
         }
 
         public async Task SignOut(Guid userId)
@@ -894,7 +882,7 @@ namespace Infrastructure.UserAccount
             {
 
                 var user = await _userManager.FindByIdAsync(userId.ToString());
-                user.IsLogin = false;
+                user.UserKey = Guid.Empty;
                 var result = await _userManager.UpdateAsync(user);
                 if (!result.Succeeded)
                 {
@@ -906,10 +894,50 @@ namespace Infrastructure.UserAccount
             }
         }
 
-        public async Task<bool> IsSignedIn(Guid userId)
+        public async Task<bool> IsValidToken(Guid userId,Guid userKey)
         {
             var applicationUser = await _userManager.FindByIdAsync(userId.ToString());
-            return applicationUser.IsLogin;
+            if(applicationUser.UserKey == userKey)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<TokenDto> RefreshToken(string accessToken, string refreshToken)
+        {
+            var principal = _jwtGenerator.GetPrincipalFromExpiredToken(accessToken);
+            if (principal == null)
+            {
+                throw new UnauthorizedAccessException("Invalid access token or refresh token");
+            }
+            string username = principal.Identity.Name;
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+            {
+                throw new UnauthorizedAccessException("Invalid access token or refresh token");
+            }
+            var newAccessToken = await _jwtGenerator.GenerateJwtAsync(user);
+            var newRefereshToken = GenerateRefreshToken();
+            user.RefreshToken = newRefereshToken;
+            _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
+            var expireTime = DateTime.Now.AddDays(refreshTokenValidityInDays);
+            user.RefreshTokenExpiryTime = expireTime;
+            await _userManager.UpdateAsync(user);
+            return new()
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefereshToken,
+                ExpiresTime = expireTime,
+            };
+        }
+
+        private string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[64];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
         }
     }
 }

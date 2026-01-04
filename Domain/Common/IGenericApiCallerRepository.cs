@@ -7,6 +7,8 @@ namespace Domain.Common
         where TEntity : class, IEntity
     {
         TEntity OwnerEntity { get; set; }
+
+        Task<TResponse> CallGetService<TResponse>(string url);
         Task<TResponse> CallService<TResponse>(string url);
     }
 }

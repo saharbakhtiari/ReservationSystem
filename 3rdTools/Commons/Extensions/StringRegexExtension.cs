@@ -160,7 +160,7 @@ namespace Extensions
             return match.Success;
         }
 
-        private static string PersianNormalize(this string text)
+        public static string PersianNormalize(this string text)
         {
 
             var contentArray = text.ToCharArray();
@@ -180,6 +180,20 @@ namespace Extensions
             var normilized = text.PersianNormalize();
             var sepratedContent = text?.ToSeperateInput(" ");
             return sepratedContent.Except(_prepositions).ToList();
+        }
+        public static string GetStringBetweenCharacters(string input, char charFrom, char charTo)
+        {
+            int posFrom = input.IndexOf(charFrom);
+            if (posFrom != -1) //if found char
+            {
+                int posTo = input.IndexOf(charTo, posFrom + 1);
+                if (posTo != -1) //if found char
+                {
+                    return input.Substring(posFrom + 1, posTo - posFrom - 1);
+                }
+            }
+
+            return string.Empty;
         }
     }
 
@@ -281,6 +295,7 @@ namespace Extensions
             retText = retText.Replace('ي', 'ی');
             retText = retText.Replace("ك", "ک");
             retText = retText.Replace("ۀ", "ه");
+            retText = retText.Replace("ة", "ه");
             retText = retText.Replace("هیئت", "هیأت");
             return retText;
         }

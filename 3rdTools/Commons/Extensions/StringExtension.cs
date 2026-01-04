@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -110,17 +111,117 @@ public static partial class StringExtension
     }
     public static bool Contains(this string source, List<string> contents)
     {
-        if(source.IsNullOrEmpty())
+        if (source.IsNullOrEmpty())
             return false;
         foreach (var item in contents)
         {
             var pattern = @"\b" + item + @"\b";
             Regex rgx = new Regex(pattern);
             Match match = rgx.Match(source);
-            if(match.Success) return true;
+            if (match.Success) return true;
             // if (item.IsNullOrWhiteSpace().Not() && source.Contains(pattern)) return true;
         }
         return false;
+    }
+    public static bool ToBoolean(this string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        switch (value.Trim().ToLower())
+        {
+            case "true":
+            case "1":
+            case "yes":
+            case "y":
+            case "ok":
+                return true;
+
+            case "false":
+            case "0":
+            case "no":
+            case "n":
+                return false;
+
+            default:
+                // اگر مقدار نامعتبر بود برگشت false
+                return false;
+        }
+    }
+
+    public class TocItemDto
+    {
+        public int Level { get; set; }   // 1..6
+        public string Title { get; set; }
+        public string Id { get; set; }
+    }
+    public static string ExtractHtmlList(this string html)
+    {
+        if (string.IsNullOrWhiteSpace(html))
+            return string.Empty;
+
+        var doc = new HtmlDocument();
+        doc.LoadHtml(html);
+
+        var headings = doc.DocumentNode
+            .SelectNodes("//h1|//h2|//h3|//h4|//h5|//h6");
+
+        if (headings == null || headings.Count == 0)
+            return string.Empty;
+
+        var sb = new StringBuilder();
+        var stack = new Stack<int>();
+
+        sb.Append("<ul class='toc'>");
+
+        foreach (var h in headings)
+        {
+            int level = int.Parse(h.Name.Substring(1));
+            string title = h.InnerText.Trim();
+
+            string id = h.GetAttributeValue("id", null);
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                id = title.ToSlug();
+                h.SetAttributeValue("id", id);
+            }
+
+            while (stack.Count > 0 && stack.Peek() > level)
+            {
+                sb.Append("</li></ul>");
+                stack.Pop();
+            }
+
+            if (stack.Count == 0 || stack.Peek() < level)
+            {
+                sb.Append("<ul>");
+                stack.Push(level);
+            }
+            else
+            {
+                sb.Append("</li>");
+            }
+
+            sb.Append($"<li><a href='#{id}'>{title}</a>");
+        }
+
+        while (stack.Count > 0)
+        {
+            sb.Append("</li></ul>");
+            stack.Pop();
+        }
+
+        sb.Append("</ul>");
+
+        return sb.ToString();
+    }
+
+    private static string ToSlug(this string text)
+    {
+        text = text.ToLowerInvariant().Trim();
+        text = Regex.Replace(text, @"\s+", "-");
+        text = Regex.Replace(text, @"[^a-z0-9آ-ی\-]", "");
+        return text;
     }
 
 }

@@ -34,6 +34,7 @@ namespace Infrastructure.UserAccount
                 new Claim(ClaimTypes.GivenName, user.FirstName ?? ""),
                 new Claim(ClaimTypes.Surname, user.LastName ?? ""),
                 new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? ""),
+                new Claim("UserKey", user.UserKey.ToString() ?? ""),
             };
 
             var allRoles = await userManager.GetRolesAsync(user);
@@ -57,6 +58,24 @@ namespace Infrastructure.UserAccount
             var encryptedToken = tokenHandler.WriteToken(token);
 
             return encryptedToken;
+        }
+
+        public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
+                ValidateLifetime = false
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+            if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                throw new SecurityTokenException("Invalid token");
+            return principal;
         }
     }
 }

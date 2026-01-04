@@ -4,12 +4,16 @@ using Domain.UnitOfWork.Uow;
 using Infrastructure.Persistence;
 using Infrastructure.UnitOfWork.EfCore.EntityFrameworkCore;
 using Infrastructure.UserAccount;
+using log4net;
+using log4net.Config;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using WebAppBlazor.Server.Services;
 
@@ -17,10 +21,26 @@ namespace WebAppBlazor.Server
 {
     public class Program
     {
+        private static readonly ILog log =
+        LogManager.GetLogger(typeof(Program));
         public async static Task Main(string[] args)
         {
             try
             {
+                log4net.Util.LogLog.InternalDebugging = true;
+
+                var repo = LogManager.GetRepository(Assembly.GetEntryAssembly());
+
+                log4net.GlobalContext.Properties["log4net:HostName"] = Environment.MachineName;
+
+                XmlConfigurator.Configure(repo,
+                    new FileInfo("log4net.config"));
+
+                ILog log = LogManager.GetLogger(typeof(Program));
+
+                log.Info("INFO FROM C#");
+                log.Error("ERROR FROM C#");
+
                 var host = CreateHostBuilder(args).Build();
                 using (var scope = host.Services.CreateScope())
                 {
@@ -36,6 +56,8 @@ namespace WebAppBlazor.Server
                     // seed IP data from appsettings
                     await ipPolicyStore.SeedAsync();
 
+                    log4net.GlobalContext.Properties["log4net:HostName"] = Environment.MachineName;
+                    log4net.Config.XmlConfigurator.Configure();
 
 
                     var services = scope.ServiceProvider;
@@ -58,7 +80,7 @@ namespace WebAppBlazor.Server
                             var permissionManager = services.GetRequiredService<MyPermissionManager>();
                             await ApplicationDbContextSeed.SeedRolesAsync(roleManager);
                             await ApplicationDbContextSeed.SeedPermissionsAsync(permissionManager, context);
-                            // await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager, roleManager);
+                           // await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager, roleManager);
                             await ApplicationDbContextSeed.SeedSampleDataAsync(context);
                             await uow.CompleteAsync();
                         }
@@ -78,7 +100,7 @@ namespace WebAppBlazor.Server
             {
 
             }
-
+            
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

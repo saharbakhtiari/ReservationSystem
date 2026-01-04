@@ -21,8 +21,9 @@ namespace WebAppBlazor.Server.Extensions
                 options.AddPolicy(name: "EnableCORS",
                   policy =>
                   {
-                      policy.WithOrigins(orgins).AllowAnyMethod().AllowAnyHeader();
+                      policy.WithOrigins(orgins).AllowAnyMethod().AllowAnyHeader().AllowCredentials().WithExposedHeaders("x-Pagination"); 
                   });
+               
             });
 
         }

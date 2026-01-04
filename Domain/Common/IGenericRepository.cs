@@ -78,5 +78,7 @@ namespace Domain.Common
 
         Task<TEntity> SaveAsync(CancellationToken cancellationToken);
         Task<TEntity> GetSingleByIdAsync(key id, bool asNoTracking = false, CancellationToken cancellationToken = default);
+        Task UpdateRangeAsync(IEnumerable<TEntity> entities);
+        Task RemoveRangeAsync(IEnumerable<TEntity> entities);
     }
 }

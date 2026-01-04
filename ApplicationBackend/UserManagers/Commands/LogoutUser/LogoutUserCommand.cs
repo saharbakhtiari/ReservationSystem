@@ -12,6 +12,7 @@ namespace Application_Backend.UserManagers.Commands.LogoutUser
         private readonly IUserManager _userManager;
         private readonly ICurrentUserService _currentUserService;
 
+
         public LogoutUserCommandHandler(IUserManager userManager, ICurrentUserService currentUserService)
         {
             _userManager = userManager;
@@ -20,7 +21,7 @@ namespace Application_Backend.UserManagers.Commands.LogoutUser
 
         public async Task<Unit> Handle(LogoutUserCommand request, CancellationToken cancellationToken)
         {
-            if (_currentUserService.UserId is not null)
+            if(_currentUserService.UserId is not null)
             {
                 await _userManager.SignOut(_currentUserService.UserId.Value);
             }

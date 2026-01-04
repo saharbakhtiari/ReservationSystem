@@ -10,6 +10,5 @@ namespace Domain.MemberProfiles
         Task<MemberProfile> GetProfileAsync(Guid userId, CancellationToken cancellationToken);
         Task<PagedList<TOutput>> GetFilteredProfileAsync<TOutput>(string filter, string sort, int PageNumber, int PageSize, CancellationToken cancellationToken);
         Task<MemberProfile> GetIncludedProfileAsync(Guid userId, CancellationToken cancellationToken);
-        Task<MemberProfile> GetProfileAsync(string nationalId, CancellationToken cancellationToken);
     }
 }

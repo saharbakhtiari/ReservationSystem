@@ -1,9 +1,6 @@
 ﻿using Domain.Common;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,12 +13,11 @@ namespace Infrastructure.Common
             var count = await query.CountAsync(cancellationToken);
 
             var items = await query
+                .OrderBy(e => 0)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);
-
             return new PagedList<T>(items, count, pageNumber, pageSize);
-
         }
     }
 }

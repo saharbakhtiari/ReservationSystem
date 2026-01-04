@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.AdvanceSearchs;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
@@ -12,7 +13,12 @@ namespace Domain.Common
     {
         DbCommand GetStoredProcedure(string name, params (string, object)[] nameValueParams);
 
-        Task<IList<T>> ExecuteStoredProcedureAsync<T>(string name, CancellationToken cancellationToken,  params (string, object)[] nameValueParams) where T : class;
+        Task<PagedList<T>> ExecuteStoredProcedureAsync<T>(string name, int pageNumber, int pageSize,  CancellationToken cancellationToken,  params (string, object)[] nameValueParams) where T : class;
+
+        Task<PagedList<FullTextResultDto>> ExecuteSearchProcedureAsync(string name, int pageNumber, int pageSize, CancellationToken cancellationToken, params (string, object)[] nameValueParams);
+
+        Task<List<FullTextResultDto>> ExecuteSearchProcedureAsync(string name, CancellationToken cancellationToken, params (string, object)[] nameValueParams);
+
 
         DbCommand GetStoredProcedure(string name);
 

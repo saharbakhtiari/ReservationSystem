@@ -4,6 +4,6 @@
     {
         None = 0,
         Title = 1,
-        Context = 2,
+        Context = 2 
     }
 }

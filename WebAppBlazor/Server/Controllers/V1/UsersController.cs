@@ -6,6 +6,7 @@ using Application.UserManagers.Commands.EditPhoneNumber;
 using Application.UserManagers.Commands.EditRegisteredUser;
 using Application.UserManagers.Commands.EditUser;
 using Application.UserManagers.Commands.LoginUser;
+using Application.UserManagers.Commands.LogoutUser;
 using Application.UserManagers.Commands.OtpUser;
 using Application.UserManagers.Commands.RegisterUser;
 using Application.UserManagers.Commands.SetPassword;
@@ -26,7 +27,6 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using WebAppBlazor.Server.Controllers.V1;
-using Application.UserManagers.Commands.LogoutUser;
 
 namespace WebAppBlazor.Server.Controllers
 {
@@ -98,8 +98,8 @@ namespace WebAppBlazor.Server.Controllers
             if (!ModelState.IsValid)
                 throw new UserFriendlyException("کد امنیتی به درستی وارد نشده است");
             var output = await Mediator.SendWithUow(dto);
-            Response.Cookies.Append("X-Access-Token", output.access_token, new CookieOptions() { HttpOnly = true, MaxAge = TimeSpan.FromHours(1), SameSite = SameSiteMode.None, Secure = true, IsEssential = true });
-
+            Response.Cookies.Append("X-Access-Token", output.AccessToken, new CookieOptions() { HttpOnly = true, MaxAge = TimeSpan.FromHours(1), SameSite = SameSiteMode.None, Secure = true, IsEssential = true });
+         
 
             return Ok();
         }
@@ -122,7 +122,7 @@ namespace WebAppBlazor.Server.Controllers
         {
             if (!ModelState.IsValid)
                 throw new UserFriendlyException("کد امنیتی به درستی وارد نشده است");
-
+         
             var output = await Mediator.SendWithUow(dto);
             return Ok(output);
         }
@@ -135,7 +135,7 @@ namespace WebAppBlazor.Server.Controllers
         public async Task<IActionResult> LoginUser([FromBody] VerifyOtpLoginCommand dto)
         {
             var output = await Mediator.SendWithUow(dto);
-            Response.Cookies.Append("X-Access-Token", output.access_token, new CookieOptions() { HttpOnly = true, MaxAge = TimeSpan.FromHours(1), SameSite = SameSiteMode.None, Secure = true });
+            Response.Cookies.Append("X-Access-Token", output.AccessToken, new CookieOptions() { HttpOnly = true, MaxAge = TimeSpan.FromHours(1), SameSite = SameSiteMode.None, Secure = true });
             return Ok();
         }
 
@@ -202,7 +202,7 @@ namespace WebAppBlazor.Server.Controllers
             return Ok(output);
         }
 
-
+     
 
         [HttpPost("changepassword")]
         [ValidateDNTCaptcha]
@@ -246,7 +246,7 @@ namespace WebAppBlazor.Server.Controllers
         public async Task<IActionResult> VerifyRegisterationUser([FromBody] VerifyRegisterationCommand dto)
         {
             var output = await Mediator.SendWithUow(dto);
-            Response.Cookies.Append("X-Access-Token", output.access_token, new CookieOptions() { HttpOnly = true, MaxAge = TimeSpan.FromHours(1), SameSite = SameSiteMode.None, Secure = true });
+            Response.Cookies.Append("X-Access-Token", output.AccessToken, new CookieOptions() { HttpOnly = true, MaxAge = TimeSpan.FromHours(1), SameSite = SameSiteMode.None, Secure = true });
             return Ok();
         }
     }

@@ -12,6 +12,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Persistence
@@ -42,6 +43,45 @@ namespace Infrastructure.Persistence
                     throw new ExternalServiceException((int)response.StatusCode, $"{errorJson.Detail}", null);
                 }
                 return response.Content.ReadFromJsonAsync<TResponse>().Result;  //Make sure to add a reference to System.Net.Http.Formatting.dll
+            }
+            catch (ExternalServiceException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new ExternalServiceException(ex.ToJson());
+            }
+        }
+
+        public async Task<TResponse> CallGetService<TResponse>(string url)
+        {
+            string contentJson = JsonSerializer.Serialize(OwnerEntity, OwnerEntity.GetType());
+           // _apiContext.Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiContext.Token);
+
+            try
+            {
+                //var tokenSource = new CancellationTokenSource(2000*1000);
+                using (var cts = new CancellationTokenSource(TimeSpan.FromMinutes(8)))
+                {
+                    var response = await _apiContext.Client.GetAsync(url, cts.Token).ConfigureAwait(false);
+                    if (response.IsSuccessStatusCode.Not())
+                    {
+                        string error = response.Content.ReadAsStringAsync().Result;
+                        try
+                        {
+                            var errorJson = JsonSerializer.Deserialize<ProblemDetails>(error);
+                            throw new ExternalServiceException((int)response.StatusCode, $"{errorJson.Detail}", null);
+                        }
+                        catch
+                        {
+                            throw new ExternalServiceException((int)response.StatusCode, "", null);
+                        }
+                    }
+                    var content = await response.Content.ReadAsStringAsync();
+                    var result = response.Content.ReadFromJsonAsync<TResponse>().Result;  //Make sure to add a reference to System.Net.Http.Formatting.dll
+                    return result;
+                }
             }
             catch (ExternalServiceException)
             {

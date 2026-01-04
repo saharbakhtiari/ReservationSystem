@@ -3,6 +3,7 @@ using CustomLoggers.AuditLog;
 using Domain.Common;
 using Domain.Common.Interfaces;
 using Exceptions;
+using Extensions;
 using MediatR;
 using Newtonsoft.Json;
 using System;
@@ -30,7 +31,7 @@ namespace Application_Backend.Common.Behaviours
             _ambientAuditLogActionInfo = ServiceLocator.ServiceProvider.GetService<IAmbientAuditLogActionInfo>();
         }
 
-        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             AuditLogActionInfo auditLogActionInfo = new();
             string requestSerialized = string.Empty;
@@ -71,12 +72,18 @@ namespace Application_Backend.Common.Behaviours
             try
             {
                 response = await next();
-                
+
                 return response;
             }
             catch (UserFriendlyException ex)
             {
                 auditLogActionInfo.ExtraProperties.Add("UFEMessage", ex.Message);
+                throw;
+            }
+            catch (GhasedakException ex)
+            {
+                var x = ex.ToJson();
+                auditLogActionInfo.ExtraProperties.Add("GhasedakEMessage", ex.ToJson());
                 throw;
             }
             catch (Exception ex)

@@ -2,7 +2,9 @@
 {
     public enum SliderType
     {
-        Slider = 1,
-        Footer = 2
+        None = 0,
+        Web = 1,
+        Mobile = 2,
+        Tablet = 3
     }
 }

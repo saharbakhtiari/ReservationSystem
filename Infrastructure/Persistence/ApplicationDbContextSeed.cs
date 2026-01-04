@@ -1,13 +1,10 @@
 ﻿using Domain.Common;
-using Domain.Permissions;
 using Domain.Security;
-using EFCore.BulkExtensions;
 using Extensions;
 using Infrastructure.UserAccount;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,15 +21,15 @@ namespace Infrastructure.Persistence
         public static async Task SeedDefaultUserAsync(IUserManager userManager, RoleManager<ApplicationUserRoles> roleManager)
         {
             var userId = await userManager.FindUserIdByUserName("bakhtiari.s");
-            if(userId.HasValue.Not())
+            if (userId.HasValue.Not())
             {
-                await userManager.CreateUserAsync("bakhtiari.s","",Domain.Users.LoginProvider.ActiveDirectory);
+                await userManager.CreateUserAsync("bakhtiari.s", "", Domain.Users.LoginProvider.ActiveDirectory);
                 userId = await userManager.FindUserIdByUserName("bakhtiari.s");
             }
             if (userId.HasValue)
             {
                 var userRole = await userManager.GetAllRoleAsync(userId.Value, default);
-                if (userRole.Select(x=>x.Name).Contains(DefaultRoleNames.Admin).Not())
+                if (userRole.Select(x => x.Name).Contains(DefaultRoleNames.Admin).Not())
                 {
                     await userManager.AssignRoleAsync(userId.Value, DefaultRoleNames.Admin);
                 }
@@ -77,7 +74,7 @@ namespace Infrastructure.Persistence
             }
             */
         }
-        public static  Task SeedSampleDataAsync(ApplicationDbContext context)
+        public static Task SeedSampleDataAsync(ApplicationDbContext context)
         {
             return Task.CompletedTask;
         }

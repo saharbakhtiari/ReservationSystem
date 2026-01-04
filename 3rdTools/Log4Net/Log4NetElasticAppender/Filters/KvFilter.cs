@@ -87,7 +87,7 @@ namespace log4stash.Filters
         }
 
         private void ProcessValueAndStore(Dictionary<string, object> logEvent, string key, string value)
-        {   
+        {
             if (Recursive)
             {
                 var innerEvent = new Dictionary<string, object>();

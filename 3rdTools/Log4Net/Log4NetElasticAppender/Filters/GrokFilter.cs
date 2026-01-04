@@ -24,7 +24,7 @@ namespace log4stash.Filters
         [PropertyNotEmpty]
         public string Pattern
         {
-            get { return _regex != null ? _regex.ToString(): string.Empty; }
+            get { return _regex != null ? _regex.ToString() : string.Empty; }
             set
             {
                 var format = new GrokSmartFormatter(value).Format(GrokPatternsKeyValue);
@@ -52,11 +52,11 @@ namespace log4stash.Filters
 
             ScanMessage(logEvent, input);
         }
-        
+
         protected void ScanMessage(Dictionary<string, object> logEvent, string input)
         {
             var match = _regex.Match(input);
-            
+
             if (!match.Success)
             {
                 logEvent.AddTag(FailedGrok);
@@ -80,15 +80,15 @@ namespace log4stash.Filters
 
         private static Dictionary<string, object> GetGrokPatternsKeyValue()
         {
-            var splittedRaw = grokPatternsRaw.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
+            var splittedRaw = grokPatternsRaw.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
             var space = new[] { " " };
             // extract patterns, ingore empty or patterns starts with '#'
             var patterns = from line in splittedRaw
-                let trimedLine = line.Trim()
-                where !string.IsNullOrEmpty(trimedLine) && !trimedLine.StartsWith("#")
-                select trimedLine.Split(space, 2, StringSplitOptions.RemoveEmptyEntries);
-            
+                           let trimedLine = line.Trim()
+                           where !string.IsNullOrEmpty(trimedLine) && !trimedLine.StartsWith("#")
+                           select trimedLine.Split(space, 2, StringSplitOptions.RemoveEmptyEntries);
+
             var dictionary = new Dictionary<string, object>();
             foreach (var keyVal in patterns)
             {

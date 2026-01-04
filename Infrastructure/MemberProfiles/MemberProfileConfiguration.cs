@@ -15,6 +15,7 @@ namespace Infrastructure.MemberProfiles
             builder.Property(c => c.UserName).HasMaxLength(100);
             builder.Property(c => c.Email).HasMaxLength(100);
             builder.Property(c => c.PhoneNumber).HasMaxLength(30);
+            builder.HasMany(c => c.Cartables).WithMany(x => x.Users);
 
         }
     }

@@ -222,7 +222,7 @@ namespace log4stash
         private readonly IIndexingTimer _timer;
         private readonly ITolerateCallsFactory _tolerateCallsFactory;
 
-        
+
         public FixFlags FixedFields { get; set; }
         public bool SerializeObjects { get; set; }
         public IndexOperationParamsDictionary IndexOperationParams { get; set; }
@@ -257,7 +257,7 @@ namespace log4stash
         public string IndexName
         {
             set { _indexName = value; }
-            get { return _indexName.ToString();  }
+            get { return _indexName.ToString(); }
         }
 
         public string IndexType
@@ -270,7 +270,7 @@ namespace log4stash
             : this(new WebElasticClientFactory(), "LogEvent-%{+yyyy.MM}",
                 string.Empty, new IndexingTimer(Timeout.Infinite) { WaitTimeout = 5000 },
                 new TolerateCallsFactory(), new LogBulkSet(),
-                new BasicLogEventConverterFactory(), new ElasticAppenderFilters(), 
+                new BasicLogEventConverterFactory(), new ElasticAppenderFilters(),
                 new BasicFileAccessor(), new LogLogEventWriter())
         {
         }
@@ -285,7 +285,7 @@ namespace log4stash
             IndexName = indexName;
             IndexType = indexType;
             _timer = timer;
-            _timer.Elapsed += (o,e) => DoIndexNow();
+            _timer.Elapsed += (o, e) => DoIndexNow();
             _tolerateCallsFactory = tolerateCallsFactory;
             _bulk = bulk;
             _fileAccessor = fileAccessor;
@@ -301,7 +301,7 @@ namespace log4stash
             IndexAsync = true;
             Template = null;
             AllowSelfSignedServerCert = false;
-            Ssl = false; 
+            Ssl = false;
             _tolerateCalls = _tolerateCallsFactory.Create(0);
             Servers = new ServerDataCollection();
             ElasticFilters = elasticFilters;

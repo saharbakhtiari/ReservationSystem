@@ -1,16 +1,29 @@
-﻿using Domain.Books;
+﻿using Domain.Cartables;
 using Domain.Common;
+using Domain.Externals.CMRServer;
+using Domain.Externals.MavaServer;
+using Domain.Externals.NotifyServer;
 using Domain.FileManager;
 using Domain.MemberProfiles;
+using Domain.SeoSms;
 using Domain.Settings;
+using Domain.SliderFiles;
+using Domain.Sliders;
 using Domain.UnitOfWork.Uow;
 using Domain.Users;
 using Extensions;
+using Infrastructure.Cartables;
+using Infrastructure.Externals;
+using Infrastructure.Externals.CMRServer;
+using Infrastructure.Externals.MavaServer;
+using Infrastructure.Externals.NotifyServer;
 using Infrastructure.FileManager;
 using Infrastructure.MemberProfiles;
-using Infrastructure.News;
 using Infrastructure.Persistence;
+using Infrastructure.SeoSmss;
 using Infrastructure.Settings;
+using Infrastructure.SliderFiles;
+using Infrastructure.Sliders;
 using Infrastructure.UnitOfWork.EfCore.EntityFrameworkCore;
 using Infrastructure.UnitOfWork.EfCore.Extensions.DependencyInjection;
 using Infrastructure.UnitOfWork.EfCore.Uow.EntityFrameworkCore;
@@ -48,20 +61,25 @@ namespace Infrastructure
 
             services.TryAddTransient(typeof(IDbContextProvider<>), typeof(UnitOfWorkDbContextProvider<>));
 
+            services.AddSingleton<IApiContext, ApiContext>();
             services.AddTransient<IUserMediator, ActiveDirectoryUserMediator>();
             services.AddTransient<IUserManager, UserManager>();
 
             services.AddTransient<ISprocRepository, SprocRepository>();
 
-            services.AddTransient<IBookRepository, BookRepository>();
-
             services.AddTransient<IMemberProfileRepository, MemberProfileRepository>();
+            services.AddTransient<ISeoSmsRepository, SeoSmsRepository>();
+            services.AddTransient<ISliderRepository, SliderRepository>();
+            services.AddTransient<ISliderFileRepository, SliderFileRepository>();
+            services.AddTransient<INotificationRepository, NotificationNotifyRepository>();
+            services.AddTransient<ICMRRequestRepository, CMRRequestRepository>();
+            services.AddTransient<IMavaRequestRepository, MavaRequestRepository>();
+            services.AddTransient<ICartableRepository, CartableRepository>();
 
 
+            services.AddTransientWithName<IFileStorage, FileDBStorage>("DB");
+            services.AddTransientWithName<IFileStorage, FileDriveStorage>("Drive");
 
-            //services.AddTransientWithName<IFileStorage, FileDBStorage>("DB");
-            services.AddTransientWithName<IFileStorage, ImageDriveStorage>("Image");
-            services.AddTransientWithName<IFileStorage, VoiceDriveStorage>("Voice");
             services.AddTransientWithName<IFileFilter, PdfFileFilter>("pdf");
             services.AddTransientWithName<IFileFilter, ExcelFileFilter>("xlsx");
             services.AddTransientWithName<IFileFilter, ExcelFileFilter>("xls");
@@ -77,6 +95,21 @@ namespace Infrastructure
 
             //test
             //services.AddTransient<ITestDataRepository, TestDataRepository>();
+
+            services.AddNotifyServerConfiguration(options =>
+            {
+                configuration.GetSection("NotifyServerConfiguration").Bind(options);
+            });
+
+            services.AddCMRServerConfiguration(options =>
+            {
+                configuration.GetSection("CMRServerConfiguration").Bind(options);
+            });
+            services.AddMavaServerConfiguration(options =>
+            {
+                configuration.GetSection("MavaServerConfiguration").Bind(options);
+            });
+
             services.AddDefaultIdentity<ApplicationUser>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = true;
@@ -116,8 +149,9 @@ namespace Infrastructure
                     {
                         OnMessageReceived = context =>
                         {
-                            //var accessToken = context.Request.Query["access_token"];
+                            // var accessToken = context.Request.Query["access_token"];
                             var accessToken = context.Request.Cookies["X-Access-Token"];
+
                             // If the request is for our hub...
                             var path = context.HttpContext.Request.Path;
                             if (!string.IsNullOrEmpty(accessToken) &&
@@ -180,6 +214,7 @@ namespace Infrastructure
             services.AddTransient<IUserMediator, ActiveDirectoryUserMediator>();
             services.AddTransient<IUserManager, UserManager>();
             services.AddTransient<ISettingRepository, SettingRepository>();
+
 
             return services;
         }

@@ -1,8 +1,8 @@
 ﻿using Application.UserManagers.Commands.EditRegisteredUser;
 using AutoMapper;
+using Domain.MemberProfiles;
 using Domain.Common;
 using Domain.Common.Interfaces;
-using Domain.MemberProfiles;
 using Domain.Users;
 using Exceptions;
 using MediatR;

@@ -9,6 +9,6 @@ namespace Domain.Common
     /// </summary>
     public abstract class ApiCallerEntity : IEntity
     {
-        public abstract Task SendAsync<TResponse>(string url, CancellationToken cancellationToken);
+        public abstract Task SendGetAsync<TResponse>(string url, CancellationToken cancellationToken);
     }
 }

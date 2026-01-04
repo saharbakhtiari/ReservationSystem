@@ -31,7 +31,7 @@ namespace log4stash.Filters
 
         public void PrepareConfiguration(IElasticsearchClient client)
         {
-            _jsonFilter = new JsonFilter {FlattenJson = FlattenXml, SourceKey = SourceKey, Separator = Separator};
+            _jsonFilter = new JsonFilter { FlattenJson = FlattenXml, SourceKey = SourceKey, Separator = Separator };
             _jsonFilter.PrepareConfiguration(client);
         }
 

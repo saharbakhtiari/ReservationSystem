@@ -557,83 +557,67 @@ namespace MicroKnights.Logging
         /// </remarks>
         virtual protected void SendBuffer(IDbTransaction dbTran, LoggingEvent[] events)
         {
-            // string.IsNotNullOrWhiteSpace() does not exist in ancient .NET frameworks
-            if (CommandText != null && CommandText.Trim() != "")
+            if (!string.IsNullOrEmpty(CommandText))
             {
+                if (string.IsNullOrEmpty(CommandValue))
+                {
+                    throw new LogException("AdoNetAppender: CommandValue is null or empty. It must be set when using batch insert.");
+                }
+
                 using (IDbCommand dbCmd = Connection.CreateCommand())
                 {
-                    // Set the command string
                     dbCmd.CommandText = CommandText;
-
-                    // Set the command type
                     dbCmd.CommandType = CommandType;
-                    // Send buffer using the prepared command object
+
                     if (dbTran != null)
-                    {
                         dbCmd.Transaction = dbTran;
-                    }
-                    // prepare the command, which is significantly faster
-                    dbCmd.Prepare();
-                    // run for all events
-                    //foreach (LoggingEvent e in events)
-                    //{
-                    //    // clear parameters that have been set
-                    //    dbCmd.Parameters.Clear();
 
-                    //    // Set the parameter values
-                    //    foreach (AdoNetAppenderParameter param in m_parameters)
-                    //    {
-                    //        param.Prepare(dbCmd);
-                    //        param.FormatValue(dbCmd, e);
-                    //    }
-
-                    //    // Execute the query
-                    //    dbCmd.ExecuteNonQuery();
-                    //}
-                    int index = 0;
-                    // clear parameters that have been set
                     dbCmd.Parameters.Clear();
+                    dbCmd.Prepare();
+
+                    int index = 0;
+
                     foreach (LoggingEvent e in events)
                     {
                         string tmpCommandValue = CommandValue;
-                        // Set the parameter values
+
                         foreach (AdoNetAppenderParameter param in m_parameters)
                         {
-                            tmpCommandValue=tmpCommandValue.Replace(param.ParameterName, param.ParameterName + index.ToString());
+                            string indexedParamName = param.ParameterName + index;
+                            tmpCommandValue = tmpCommandValue.Replace(param.ParameterName, indexedParamName);
+
                             param.PrepareBatch(dbCmd, index);
                             param.FormatValueBatch(dbCmd, e, index);
                         }
+
+                        dbCmd.CommandText += tmpCommandValue + ",";
                         index++;
-                        dbCmd.CommandText += tmpCommandValue+",";
                     }
-                    dbCmd.CommandText = dbCmd.CommandText.Substring(0, dbCmd.CommandText.Length - 1);
-                    // Execute the query
+
+                    // حذف کامای آخر
+                    dbCmd.CommandText = dbCmd.CommandText.TrimEnd(',');
+
                     dbCmd.ExecuteNonQuery();
                 }
             }
             else
             {
-                // create a new command
                 using (IDbCommand dbCmd = Connection.CreateCommand())
                 {
                     if (dbTran != null)
-                    {
                         dbCmd.Transaction = dbTran;
-                    }
-                    // run for all events
+
                     foreach (LoggingEvent e in events)
                     {
-                        // Get the command text from the Layout
                         string logStatement = GetLogStatement(e);
-
                         LogLog.Debug(declaringType, "LogStatement [" + logStatement + "]");
-
                         dbCmd.CommandText = logStatement;
                         dbCmd.ExecuteNonQuery();
                     }
                 }
             }
         }
+
 
         /// <summary>
         /// Formats the log message into database statement text.
@@ -900,7 +884,7 @@ namespace MicroKnights.Logging
         /// The text of the command.
         /// </summary>
         private string m_commandText;
-        
+
         private string m_commandValue;
 
         /// <summary>
@@ -1153,13 +1137,13 @@ namespace MicroKnights.Logging
             command.Parameters.Add(param);
         }
 
-        virtual public void PrepareBatch(IDbCommand command,int index)
+        virtual public void PrepareBatch(IDbCommand command, int index)
         {
             // Create a new parameter
             IDbDataParameter param = command.CreateParameter();
 
             // Set the parameter properties
-            param.ParameterName = ParameterName+index.ToString();
+            param.ParameterName = ParameterName + index.ToString();
 
             if (!m_inferType)
             {
@@ -1210,10 +1194,10 @@ namespace MicroKnights.Logging
             param.Value = formattedValue;
         }
 
-        virtual public void FormatValueBatch(IDbCommand command, LoggingEvent loggingEvent,int index)
+        virtual public void FormatValueBatch(IDbCommand command, LoggingEvent loggingEvent, int index)
         {
             // Lookup the parameter
-            IDbDataParameter param = (IDbDataParameter)command.Parameters[ParameterName+index.ToString()];
+            IDbDataParameter param = (IDbDataParameter)command.Parameters[ParameterName + index.ToString()];
 
             // Format the value
             object formattedValue = Layout.Format(loggingEvent);

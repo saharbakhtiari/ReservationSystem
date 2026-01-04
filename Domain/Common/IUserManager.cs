@@ -2,6 +2,7 @@
 using Domain.Users;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,7 +28,7 @@ namespace Domain.Common
         Task<Dictionary<string, int>> GetUserCountInRoleAsync();
         Task<string> GetUserNameAsync(Guid userId);
         Task<List<TOutput>> GetUsersAsync<TOutput>(List<Guid> userIds);
-        Task<string> GetUserTokenIdAsync(string userName);
+        Task<TokenDto> GetUserTokenIdAsync(string userName);
         Task<string> GetVerifiedMobileNumber(Guid userId);
         //Task<bool> IsEmailConfirmed(string userEmail);
         Task<bool> UserIsInRoleAsync(Guid userId, string role);
@@ -56,12 +57,12 @@ namespace Domain.Common
         Task VerifyOtpAsync(string phoneNumber, string verifyCode, CancellationToken cancellationToken);
         Task SetPasswordAsync(Guid userId, string password);
         Task AuthenticateAsync(string userName);
-        Task<Guid> RegisterUser(string phoneNumber, string nationalId, CancellationToken cancellationToken);
+        Task<Guid> RegisterUser(string phoneNumber, CancellationToken cancellationToken);
         Task SendLoginOtpCodeAsync(string phoneNumber, CancellationToken cancellationToken);
         Task<bool> HasPasswordAsync(Guid userId);
         Task UpdatePhoneNumberAsync(UserInputDto user);
-        Task<Guid> RegisterUser(UserInputDto userDto, CancellationToken cancellationToken);
         Task SignOut(Guid userId);
-        Task<bool> IsSignedIn(Guid userId);
+        Task<bool> IsValidToken(Guid userId, Guid userKey);
+        Task<TokenDto> RefreshToken(string accessToken, string refreshToken);
     }
 }

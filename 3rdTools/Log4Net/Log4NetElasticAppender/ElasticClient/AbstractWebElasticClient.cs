@@ -51,6 +51,7 @@ namespace log4stash
             var url = string.Format("{0}://{1}:{2}{3}/", Ssl ? "https" : "http", serverData.Address, serverData.Port, String.IsNullOrEmpty(serverData.Path) ? "" : serverData.Path);
             return url;
         }
+
         protected string GetCertPath(IServerData serverData)
         {
             return serverData.CertPath;

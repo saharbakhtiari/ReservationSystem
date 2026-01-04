@@ -50,9 +50,9 @@ namespace WebAppBlazor.Server
             services.AddCustomLoggers(Configuration);
             services.AddSeoSms(Configuration);
             services.AddRabbitMqManagers(Configuration);
-            services.ConfigureCors(Configuration);//azadi builder.Services.ConfigureCors(builder.Configuration);//azadi 
+            services.ConfigureCors(Configuration);
 
-            services.AddAutoMapper(typeof(Domain.Common.MappingProfile), typeof(Infrastructure.Common.MappingProfile), typeof(Application_Backend.Common.MappingProfile));
+            services.AddAutoMapper(typeof(MappingProfile), typeof(Infrastructure.Common.MappingProfile), typeof(Application_Backend.Common.MappingProfile));
 
             // services
             //.AddRabbitMQCoreClient(Configuration.GetSection("RabbitMQ"))
@@ -210,7 +210,7 @@ namespace WebAppBlazor.Server
                     //  c.SwaggerEndpoint($"/swagger/v2/swagger.json", $"Teta Service v2");
 
                 });
-                app.UseStaticFiles();
+
                 #region --------------  Localizer  ---------------------
                 var options = new RequestLocalizationOptions
                 {

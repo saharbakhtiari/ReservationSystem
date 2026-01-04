@@ -1,6 +1,7 @@
 ﻿using Domain.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Linq;
 using System.Security.Claims;
 
 namespace WebAppBlazor.Server.Services
@@ -18,11 +19,13 @@ namespace WebAppBlazor.Server.Services
         private bool _initEmail = false;
         private bool _initFirstName = false;
         private bool _initLastName = false;
+        private bool _initUserKey = false;
         private Guid? _userId;
         private string? _name;
         private string? _emailAddress;
         private string? _firstName;
         private string? _lastName;
+        private Guid? _userKey;
 
         public Guid? UserId
         {
@@ -103,6 +106,23 @@ namespace WebAppBlazor.Server.Services
                 }
 
                 return _lastName;
+            }
+        }
+
+        public Guid? UserKey
+        {
+            get
+            {
+                if (_initUserKey == false)
+                {
+                    string userKeyString = _httpContextAccessor?.HttpContext?.User?.FindFirstValue("UserKey");
+
+                    _userKey = string.IsNullOrWhiteSpace(userKeyString) ? null : Guid.Parse(userKeyString);
+
+                    _initId = true;
+                }
+
+                return _userKey;
             }
         }
 

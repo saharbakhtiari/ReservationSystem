@@ -15,6 +15,7 @@ namespace Domain.Common.Interfaces
 
         string FirstName { get; }
         string LastName { get; }
+        Guid? UserKey { get; }
     }
 
     public interface IRequestOrginService

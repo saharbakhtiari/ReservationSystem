@@ -1,14 +1,14 @@
 ﻿using Application.Common.Security;
-using Domain.Common;
+using Domain.Permissions;
+using Domain.Security;
 using Domain.Users;
 using MediatR;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Application.UserManagers.Queries.GetSuggestUsers
 {
-    [Authorize]
+    [Authorize(Roles = DefaultRoleNames.Admin, Permissions = PermissionNames.Manager_UserManager)]
+
     public class GetSuggestUsersQuery : IRequest<List<UserInputDto>>
     {
         public string Filter { get; set; }

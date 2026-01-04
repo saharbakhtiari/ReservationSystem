@@ -1,9 +1,8 @@
-﻿using CustomLoggers.AuditLog;
-using RestSharp;
+﻿using RestSharp;
 using RestSharp.Authenticators;
+using System;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
-using System;
 
 namespace log4stash.ElasticClient.RestSharp
 {

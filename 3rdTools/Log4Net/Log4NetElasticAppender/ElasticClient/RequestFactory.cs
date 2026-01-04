@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using RestSharp;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace log4stash.ElasticClient
 {

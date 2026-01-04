@@ -28,7 +28,7 @@ public class TestingInfrastructure
     public static string ChefUserEmail => "chef@local.com";
 
     private static IConfigurationRoot _configuration;
-    private static Checkpoint _checkpoint;
+   // private static Checkpoint _checkpoint;
     private static Guid? _currentUserId;
     private static string _currentEmail;
     private static bool _scopeUpdatedInTest = false;

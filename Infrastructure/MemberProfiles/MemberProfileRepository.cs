@@ -26,12 +26,6 @@ namespace Infrastructure.MemberProfiles
                 .FirstOrDefaultAsync(a => a.UserId == userId && !a.IsDeleted, cancellationToken);
         }
 
-        public Task<MemberProfile> GetProfileAsync(string nationalId, CancellationToken cancellationToken)
-        {
-            return GetAllAsQueryable()
-                .FirstOrDefaultAsync(a => a.NationalId == nationalId && !a.IsDeleted, cancellationToken);
-        }
-
         public Task<MemberProfile> GetIncludedProfileAsync(Guid userId, CancellationToken cancellationToken)
         {
             return GetAllAsQueryable()
