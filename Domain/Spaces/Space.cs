@@ -1,6 +1,7 @@
 ﻿using Domain.Amenitys;
 using Domain.Common;
 using Domain.Contract.Enums;
+using Domain.SpaceFiles;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -15,6 +16,7 @@ namespace Domain.Spaces
         public string Location { get; set; }
         public SpaceType Type { get; set; }
         public ICollection<Amenity> Amenities { get; set; }
+        public ICollection<SpaceFile> Images { get; set; }
         public string IsActive { get; set; }
         public bool IsDeleted { get; set; }
 
@@ -27,6 +29,8 @@ namespace Domain.Spaces
             Repository = ServiceLocator.ServiceProvider.GetService<ISpaceRepository>();
             DomainService.OwnerEntity = this;
             Repository.OwnerEntity = this;
+            Amenities = new HashSet<Amenity>();
+            Images = new HashSet<SpaceFile>();
         }
 
         public override async Task SaveAsync(CancellationToken cancellationToken)
