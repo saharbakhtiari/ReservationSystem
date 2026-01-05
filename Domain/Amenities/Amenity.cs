@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.SpaceFiles;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ namespace Domain.Amenitys
     public class Amenity : AuditableEntity
     {
         public string Title { get; set; } = null!;
-        public string ImageUrl { get; set; }
+        public SpaceFile Icon { get; set; }
         public bool IsDeleted { get; set; }
 
         public IAmenityDomainService DomainService { get; set; }
