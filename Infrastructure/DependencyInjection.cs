@@ -9,6 +9,7 @@ using Domain.SeoSms;
 using Domain.Settings;
 using Domain.SliderFiles;
 using Domain.Sliders;
+using Domain.Spaces;
 using Domain.UnitOfWork.Uow;
 using Domain.Users;
 using Extensions;
@@ -24,6 +25,7 @@ using Infrastructure.SeoSmss;
 using Infrastructure.Settings;
 using Infrastructure.SliderFiles;
 using Infrastructure.Sliders;
+using Infrastructure.Spaces;
 using Infrastructure.UnitOfWork.EfCore.EntityFrameworkCore;
 using Infrastructure.UnitOfWork.EfCore.Extensions.DependencyInjection;
 using Infrastructure.UnitOfWork.EfCore.Uow.EntityFrameworkCore;
@@ -75,6 +77,7 @@ namespace Infrastructure
             services.AddTransient<ICMRRequestRepository, CMRRequestRepository>();
             services.AddTransient<IMavaRequestRepository, MavaRequestRepository>();
             services.AddTransient<ICartableRepository, CartableRepository>();
+            services.AddTransient<ISpaceRepository, SpaceRepository>();
 
 
             services.AddTransientWithName<IFileStorage, FileDBStorage>("DB");

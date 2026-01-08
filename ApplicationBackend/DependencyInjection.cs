@@ -12,6 +12,7 @@ using Domain.SeoSms;
 using Domain.Settings;
 using Domain.SliderFiles;
 using Domain.Sliders;
+using Domain.Spaces;
 using Domain.UnitOfWork.Uow;
 using FluentValidation;
 using MediatR;
@@ -53,6 +54,7 @@ namespace Application_Backend
             services.AddTransient(typeof(ICMRRequestDomainService), typeof(CMRRequestDomainService));
             services.AddTransient(typeof(IMavaRequestDomainService), typeof(MavaRequestDomainService));
             services.AddTransient(typeof(ICartableDomainService), typeof(CartableDomainService));
+            services.AddTransient(typeof(ISpaceDomainService), typeof(SpaceDomainService));
             services.AddNotificationConfig(options =>
             {
                 configuration.GetSection("Notification").Bind(options);

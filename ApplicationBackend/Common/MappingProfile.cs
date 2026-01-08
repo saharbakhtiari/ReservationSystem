@@ -19,6 +19,8 @@ using Application.Sliders.Commands.CreateSlider;
 using Application.Sliders.Commands.UpdateSlider;
 using Application.Sliders.Queries.GetFilteredSliders;
 using Application.Sliders.Queries.GetSlider;
+using Application.Spaces.Commands.CreateSpace;
+using Application.Spaces.Commands.UpdateSpace;
 using Application.UserManagers.Commands.CreateUser;
 using Application.UserManagers.Commands.EditPhoneNumber;
 using Application.UserManagers.Commands.EditRegisteredUser;
@@ -37,6 +39,8 @@ using Domain.MemberProfiles;
 using Domain.SeoFiles;
 using Domain.SliderFiles;
 using Domain.Sliders;
+using Domain.SpaceFiles;
+using Domain.Spaces;
 using Domain.Users;
 using Extensions;
 using System;
@@ -143,6 +147,14 @@ namespace Application_Backend.Common
                .ForMember(a => a.Image, opt => opt.Ignore());
             CreateMap<UpdateSliderRequest, UpdateSliderCommand>()
              .ForMember(a => a.Image, opt => opt.Ignore());
+            #endregion
+
+            #region Space
+            CreateMap<CreateSpaceCommand, Space>();
+            CreateMap<CreateSpaceFileCommand, SpaceFile>();
+            CreateMap<UpdateSpaceFileCommand, SpaceFile>();
+            CreateMap<UpdateSpaceCommand, Space>();
+
             #endregion
         }
 

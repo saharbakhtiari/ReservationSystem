@@ -8,6 +8,7 @@ using Infrastructure.Persistence;
 using Infrastructure.UnitOfWork.EfCore.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,6 +40,11 @@ namespace Infrastructure.SpaceFiles
                 .OrderByIf(sort.IsNullOrWhiteSpace().Not(), sort)
                 .ProjectTo<TOutput>(mapper.ConfigurationProvider)
                 .ToPagedList(PageNumber, PageSize, cancellationToken);
+        }
+
+        public async Task BulkUpdateAsync(List<SpaceFile> files)
+        {
+            await UpdateRangeAsync(files);
         }
     }
 }

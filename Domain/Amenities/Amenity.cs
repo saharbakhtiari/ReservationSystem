@@ -1,6 +1,7 @@
 ﻿using Domain.Common;
 using Domain.SpaceFiles;
-using System;
+using Domain.Spaces;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,6 +12,8 @@ namespace Domain.Amenitys
         public string Title { get; set; } = null!;
         public SpaceFile Icon { get; set; }
         public bool IsDeleted { get; set; }
+        public ICollection<Space> Spaces { get; set; }
+
 
         public IAmenityDomainService DomainService { get; set; }
         public IAmenityRepository Repository { get; set; }
