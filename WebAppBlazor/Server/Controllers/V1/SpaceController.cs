@@ -5,6 +5,7 @@ using Application.Spaces.Queries.GetFilteredSpaces;
 using Application.Spaces.Queries.GetSpace;
 using Application_Backend.Common;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -31,15 +32,46 @@ namespace WebAppBlazor.Server.Controllers.V1
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] CreateSpaceCommand dto)
+        public async Task<IActionResult> Create([FromForm] CreateSpaceRequest model)
         {
+            var dto = Mapper.Map<CreateSpaceCommand>(model);
+            if (model.Images != null)
+            {
+                foreach(var img in model.Images)
+                {
+                    using var ms = new MemoryStream();
+                    await img.CopyToAsync(ms);
+                    dto.Images.Add(new CreateSpaceFileCommand
+                    {
+                        DataFiles = ms.ToArray(),
+                        Name = img.FileName,
+                        FileType = img.ContentType
+                    });
+                }
+            }
             var id = await Mediator.SendWithUow(dto);
             return Ok(id);
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromForm] UpdateSpaceCommand dto)
+        public async Task<IActionResult> Update([FromForm] UpdateSpaceRequest model)
         {
+            var dto = Mapper.Map<UpdateSpaceCommand>(model);
+            if (model.Images != null)
+            {
+                foreach(var img in model.Images)
+                {
+                    using var ms = new MemoryStream();
+                    await img.CopyToAsync(ms);
+                    dto.Images.Add(new UpdateSpaceFileCommand
+                    {
+                        Id = model.ImageId,
+                        DataFiles = ms.ToArray(),
+                        Name = img.FileName,
+                        FileType = img.ContentType
+                    });
+                }
+            }
             await Mediator.SendWithUow(dto);
             return Ok(true);
         }

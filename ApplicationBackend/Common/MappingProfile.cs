@@ -154,6 +154,10 @@ namespace Application_Backend.Common
             CreateMap<CreateSpaceFileCommand, SpaceFile>();
             CreateMap<UpdateSpaceFileCommand, SpaceFile>();
             CreateMap<UpdateSpaceCommand, Space>();
+            CreateMap<CreateSpaceRequest, CreateSpaceCommand>()
+                .ForMember(a => a.Images, opt => opt.Ignore()); 
+            CreateMap<UpdateSpaceRequest, UpdateSpaceCommand>()
+                .ForMember(a => a.Images, opt => opt.Ignore());
 
             #endregion
         }
