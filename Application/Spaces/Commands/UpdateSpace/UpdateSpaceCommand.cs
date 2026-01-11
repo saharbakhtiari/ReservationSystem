@@ -16,7 +16,15 @@ namespace Application.Spaces.Commands.UpdateSpace
         public string Location { get; set; }
         public SpaceType Type { get; set; }
         public List<long> AmenityIds { get; set; }
-        public List<UpdateSpaceFileCommand> Images { get; set; }
+        public long MainImageId { get; set; }
+        public UpdateSpaceFileCommand MainImage { get; set; }
+        public List<long> UnChangedGalleryImageIds { get; set; }
+        public List<UpdateSpaceFileCommand> Gallery { get; set; }
+
+        public UpdateSpaceCommand()
+        {
+            Gallery = new();
+        }
     }
 
     public class UpdateSpaceFileCommand
@@ -26,7 +34,6 @@ namespace Application.Spaces.Commands.UpdateSpace
         public string Name { get; set; }
         public string FileType { get; set; }
         public byte[] DataFiles { get; set; }
-        public int Order { get; set; }
     }
 
     public class UpdateSpaceRequest
@@ -37,7 +44,9 @@ namespace Application.Spaces.Commands.UpdateSpace
         public string Location { get; set; }
         public SpaceType Type { get; set; }
         public List<long> AmenityIds { get; set; }
-        public long ImageId { get; set; }
-        public List<IFormFile> Images { get; set; }
+        public long MainImageId { get; set; }
+        public IFormFile MainImage { get; set; }
+        public List<long> UnChangedGalleryImageIds { get; set; }
+        public List<IFormFile> Gallery { get; set; }
     }
 }

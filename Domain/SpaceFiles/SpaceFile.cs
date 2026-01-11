@@ -7,7 +7,6 @@ namespace Domain.SpaceFiles
 {
     public class SpaceFile : FileEntity
     {
-        public int Order { get; set; }
         public bool IsDeleted { get; set; }
 
         public ISpaceFileDomainService DomainService { get; set; }

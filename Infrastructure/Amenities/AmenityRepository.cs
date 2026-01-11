@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Domain.Common;
-using Domain.Contract.Enums;
 using Domain.Amenitys;
+using Domain.Common;
 using Extensions;
 using Infrastructure.Common;
 using Infrastructure.Persistence;
@@ -25,7 +24,15 @@ namespace Infrastructure.Amenitys
             return GetAllAsQueryable()
                 .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted, cancellationToken);
         }
-        public Task<PagedList<TOutput>> GetFilteredAsync<TOutput>( string filter, string sort, int PageNumber, int PageSize, CancellationToken cancellationToken)
+
+        public Task<Amenity> GetIncludedAsync(long id, CancellationToken cancellationToken)
+        {
+            return GetAllAsQueryable()
+                .Include(a => a.Icon)
+                .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted, cancellationToken);
+        }
+
+        public Task<PagedList<TOutput>> GetFilteredAsync<TOutput>(string filter, string sort, int PageNumber, int PageSize, CancellationToken cancellationToken)
         {
             var mapper = ServiceLocator.ServiceProvider.GetService<IMapper>();
             return GetAllAsQueryable()

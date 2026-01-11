@@ -15,7 +15,8 @@ namespace Application.Spaces.Queries.GetSpace
         public string Location { get; set; }
         public SpaceType Type { get; set; }
         public List<GetSpaceByIdAmenity> Amenities { get; set; }
-        public List<GetSpaceByIdFileDto> Images { get; set; }
+        public List<GetSpaceByIdFileDto> Gallery { get; set; }
+        public GetSpaceByIdFileDto MainImage { get; set; }
     }
     public class GetSpaceByIdFileDto
     {

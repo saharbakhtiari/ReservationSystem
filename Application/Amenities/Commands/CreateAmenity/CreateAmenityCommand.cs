@@ -21,6 +21,6 @@ namespace Application.Amenitys.Commands.CreateAmenity
     public class CreateAmenityRequest
     {
         public string Title { get; set; }
-        public IFormFile Image { get; set; }
+        public IFormFile Icon { get; set; }
     }
 }

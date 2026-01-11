@@ -2,6 +2,7 @@
 using Application_Backend.Common.Behaviours;
 using Application_Backend.Common.Notifications;
 using Application_Backend.Rules.Commands.AddRuleVersion;
+using Domain.Amenitys;
 using Domain.Cartables;
 using Domain.Common;
 using Domain.Externals.CMRServer;
@@ -12,6 +13,7 @@ using Domain.SeoSms;
 using Domain.Settings;
 using Domain.SliderFiles;
 using Domain.Sliders;
+using Domain.SpaceFiles;
 using Domain.Spaces;
 using Domain.UnitOfWork.Uow;
 using FluentValidation;
@@ -55,6 +57,8 @@ namespace Application_Backend
             services.AddTransient(typeof(IMavaRequestDomainService), typeof(MavaRequestDomainService));
             services.AddTransient(typeof(ICartableDomainService), typeof(CartableDomainService));
             services.AddTransient(typeof(ISpaceDomainService), typeof(SpaceDomainService));
+            services.AddTransient(typeof(ISpaceFileDomainService), typeof(SpaceFileDomainService));
+            services.AddTransient(typeof(IAmenityDomainService), typeof(AmenityDomainService));
             services.AddNotificationConfig(options =>
             {
                 configuration.GetSection("Notification").Bind(options);

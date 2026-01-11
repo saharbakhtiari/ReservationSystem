@@ -22,7 +22,7 @@ namespace Application_Backend.Amenitys.Queries.GetAmenity
 
         public async Task<GetAmenityByIdDto> Handle(GetAmenityByIdQuery request, CancellationToken cancellationToken)
         {
-            var amenity = await Amenity.GetAsync(request.Id, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
+            var amenity = await Amenity.GetIncludedAsync(request.Id, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
             return _mapper.Map<GetAmenityByIdDto>(amenity);
         }
     }

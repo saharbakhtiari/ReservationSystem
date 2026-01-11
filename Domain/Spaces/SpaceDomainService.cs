@@ -1,12 +1,12 @@
-﻿using Domain.UnitOfWork.Uow;
-using Microsoft.Extensions.Localization;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Generic;
-using System;
-using System.Linq;
+﻿using Domain.Amenitys;
 using Domain.SpaceFiles;
-using Domain.Amenitys;
+using Domain.UnitOfWork.Uow;
+using Microsoft.Extensions.Localization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Domain.Spaces
 {
@@ -23,10 +23,10 @@ namespace Domain.Spaces
 
         public Space OwnerEntity { get; set; }
 
-        public async Task SetAmenities(List<long> Ids,CancellationToken cancellationToken)
+        public async Task SetAmenities(List<long> Ids, CancellationToken cancellationToken)
         {
             List<Amenity> amenities = new();
-            foreach(var id in Ids)
+            foreach (var id in Ids)
             {
                 var amenity = await Amenity.GetAsync(id, cancellationToken);
                 amenities.Add(amenity);
@@ -34,24 +34,37 @@ namespace Domain.Spaces
             OwnerEntity.Amenities = amenities;
         }
 
+        public async Task UpdateAmenities(List<long> Ids, CancellationToken cancellationToken)
+        {
+            List<Amenity> amenities = new();
+            var deleteAminity = OwnerEntity.Amenities.Where(a => !Ids.Contains(a.Id)).Select(a => a.Id).ToList();
+            var AddAminity = OwnerEntity.Amenities.Where(a => Ids.Contains(a.Id)).Select(a => a.Id).ToList();
+            foreach (var id in AddAminity)
+            {
+                var amenity = await Amenity.GetAsync(id, cancellationToken);
+                amenities.Add(amenity);
+            }
+            foreach (var id in deleteAminity)
+            {
+                var amenity = await Amenity.GetAsync(id, cancellationToken);
+                amenities.Remove(amenity);
+            }
+            OwnerEntity.Amenities = amenities;
+        }
+
         public async Task CreateImages(CancellationToken cancellationToken)
         {
-            foreach (var item in OwnerEntity.Images)
+            foreach (var item in OwnerEntity.Gallery)
             {
                 await item.DomainService.StoreFile(cancellationToken);
             }
         }
 
-        public async Task UpdateImages(CancellationToken cancellationToken)
+        public async Task UpdateImages(List<long> UnChangedGalleryImageIds, CancellationToken cancellationToken)
         {
-            var ExistImages = OwnerEntity.Images.Where(a => a.Id > 0).ToList();
-            var newImages = OwnerEntity.Images.Where(a => a.Id < 1).ToList();
-            var deleteImages = OwnerEntity.Images
-                                        .Where(e => e.Id > 0) // ← آیتم‌های صفر حذف
-                                        .Where(e => !ExistImages
-                                        .Where(x => x.Id > 0)
-                                        .Any(x => x.Id == e.Id))
-                                        .ToList();
+            var newImages = OwnerEntity.Gallery.Where(a => a.Id < 1).ToList();
+            var entity = await Space.GetIncludedAsync(OwnerEntity.Id, cancellationToken);
+            var deleteImages = entity.Gallery.Where(a => !UnChangedGalleryImageIds.Contains(a.Id) && a.Id > 0).ToList();
             await AddNewImages(newImages, cancellationToken);
             await RemoveImages(deleteImages);
         }
@@ -66,15 +79,15 @@ namespace Domain.Spaces
             }
         }
 
-        private async Task RemoveImages(List<SpaceFile> websites)
+        private async Task RemoveImages(List<SpaceFile> deleteImages)
         {
             using (var uow1 = _unitOfWorkManager.Begin(new SedUnitOfWorkOptions { IsTransactional = true, Timeout = TimeSpan.FromMinutes(10) }, requiresNew: true))
             {
-                foreach (var item in websites)
+                foreach (var item in deleteImages)
                 {
                     item.IsDeleted = true;
                 }
-                await new SpaceFile().Repository.BulkUpdateAsync(websites);
+                await new SpaceFile().Repository.BulkUpdateAsync(deleteImages);
             }
         }
     }

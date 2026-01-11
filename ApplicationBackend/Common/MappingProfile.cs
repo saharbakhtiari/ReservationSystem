@@ -1,4 +1,8 @@
 ﻿using Application.AdvanceSearch.Queries.SearchRuleVersion;
+using Application.Amenities.Queries.GetFilteredAmenities;
+using Application.Amenitys.Commands.CreateAmenity;
+using Application.Amenitys.Commands.UpdateAmenity;
+using Application.Amenitys.Queries.GetAmenity;
 using Application.Cartable.Commands.CreateCartable;
 using Application.Cartable.Commands.UpdateCartable;
 using Application.Cartable.Queries.GetCartableById;
@@ -21,6 +25,8 @@ using Application.Sliders.Queries.GetFilteredSliders;
 using Application.Sliders.Queries.GetSlider;
 using Application.Spaces.Commands.CreateSpace;
 using Application.Spaces.Commands.UpdateSpace;
+using Application.Spaces.Queries.GetFilteredSpaces;
+using Application.Spaces.Queries.GetSpace;
 using Application.UserManagers.Commands.CreateUser;
 using Application.UserManagers.Commands.EditPhoneNumber;
 using Application.UserManagers.Commands.EditRegisteredUser;
@@ -29,10 +35,8 @@ using Application.UserManagers.Commands.VerifyOtpLogin;
 using Application.UserManagers.Commands.VerifyRegisteration;
 using AutoMapper;
 using Domain.AdvanceSearchs;
+using Domain.Amenitys;
 using Domain.Common.Mappings;
-using Domain.Externals.CMRServer.Rules;
-using Domain.Externals.MavaServer.Rules;
-using Domain.Externals.NotifyServer.EmailNotifications;
 using Domain.Footers;
 using Domain.Headers;
 using Domain.MemberProfiles;
@@ -42,7 +46,6 @@ using Domain.Sliders;
 using Domain.SpaceFiles;
 using Domain.Spaces;
 using Domain.Users;
-using Extensions;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -111,7 +114,7 @@ namespace Application_Backend.Common
             CreateMap<Header, FilteredHeadersDto>();
             CreateMap<Header, HeaderDto>();
 
-           
+
 
             #region ---------------  AdvanceSearch  -----------------
 
@@ -155,10 +158,34 @@ namespace Application_Backend.Common
             CreateMap<UpdateSpaceFileCommand, SpaceFile>();
             CreateMap<UpdateSpaceCommand, Space>();
             CreateMap<CreateSpaceRequest, CreateSpaceCommand>()
-                .ForMember(a => a.Images, opt => opt.Ignore()); 
-            CreateMap<UpdateSpaceRequest, UpdateSpaceCommand>()
-                .ForMember(a => a.Images, opt => opt.Ignore());
+                .ForMember(a => a.Gallery, opt => opt.Ignore())
+                .ForMember(a => a.MainImage, opt => opt.Ignore());
 
+            CreateMap<UpdateSpaceRequest, UpdateSpaceCommand>()
+                .ForMember(a => a.Gallery, opt => opt.Ignore())
+                .ForMember(a => a.MainImage, opt => opt.Ignore());
+            CreateMap<Space, GetSpaceByIdDto>();
+            CreateMap<SpaceFile, GetSpaceByIdFileDto>();
+            CreateMap<Space, FilteredSpacesDto>();
+            CreateMap<SpaceFile, FilteredSpacesFileDto>();
+            CreateMap<Amenity, GetSpaceByIdAmenity>();
+            #endregion
+
+
+
+            #region Amenity
+            CreateMap<CreateAmenityCommand, Amenity>();
+            CreateMap<CreateAmenityFileCommand, SpaceFile>();
+            CreateMap<UpdateAmenityFileCommand, SpaceFile>();
+            CreateMap<UpdateAmenityCommand, Amenity>();
+            CreateMap<CreateAmenityRequest, CreateAmenityCommand>()
+                .ForMember(a => a.Icon, opt => opt.Ignore());
+            CreateMap<UpdateAmenityRequest, UpdateAmenityCommand>()
+                .ForMember(a => a.Icon, opt => opt.Ignore());
+            CreateMap<Amenity, GetAmenityByIdDto>();
+            CreateMap<SpaceFile, GetAmenityByIdFileDto>();
+            CreateMap<Amenity, FilteredAmenitiesDto>();
+            CreateMap<SpaceFile, FilteredAmenitiesFileDto>();
             #endregion
         }
 

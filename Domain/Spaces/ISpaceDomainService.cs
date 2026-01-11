@@ -9,6 +9,6 @@ namespace Domain.Spaces
     {
         Task CreateImages(CancellationToken cancellationToken);
         Task SetAmenities(List<long> Ids, CancellationToken cancellationToken);
-        Task UpdateImages(CancellationToken cancellationToken);
+        Task UpdateImages(List<long> UnChangedGalleryImageIds,CancellationToken cancellationToken);
     }
 }

@@ -8,5 +8,6 @@ namespace Domain.Amenitys
     {
         Task<Amenity> GetAsync(long id, CancellationToken cancellationToken);
         Task<PagedList<TOutput>> GetFilteredAsync<TOutput>(string filter, string sort, int PageNumber, int PageSize, CancellationToken cancellationToken);
+        Task<Amenity> GetIncludedAsync(long id, CancellationToken cancellationToken);
     }
 }

@@ -35,13 +35,24 @@ namespace WebAppBlazor.Server.Controllers.V1
         public async Task<IActionResult> Create([FromForm] CreateSpaceRequest model)
         {
             var dto = Mapper.Map<CreateSpaceCommand>(model);
-            if (model.Images != null)
+            if (model.MainImage != null)
             {
-                foreach(var img in model.Images)
+                using var ms = new MemoryStream();
+                await model.MainImage.CopyToAsync(ms);
+                dto.MainImage = new CreateSpaceFileCommand
+                {
+                    DataFiles = ms.ToArray(),
+                    Name = model.MainImage.FileName,
+                    FileType = model.MainImage.ContentType
+                };
+            }
+            if (model.Gallery != null)
+            {
+                foreach (var img in model.Gallery)
                 {
                     using var ms = new MemoryStream();
                     await img.CopyToAsync(ms);
-                    dto.Images.Add(new CreateSpaceFileCommand
+                    dto.Gallery.Add(new CreateSpaceFileCommand
                     {
                         DataFiles = ms.ToArray(),
                         Name = img.FileName,
@@ -57,15 +68,26 @@ namespace WebAppBlazor.Server.Controllers.V1
         public async Task<IActionResult> Update([FromForm] UpdateSpaceRequest model)
         {
             var dto = Mapper.Map<UpdateSpaceCommand>(model);
-            if (model.Images != null)
+            if (model.MainImage != null)
             {
-                foreach(var img in model.Images)
+                using var ms = new MemoryStream();
+                await model.MainImage.CopyToAsync(ms);
+                dto.MainImage = new UpdateSpaceFileCommand
+                {
+                    Id = model.MainImageId,
+                    DataFiles = ms.ToArray(),
+                    Name = model.MainImage.FileName,
+                    FileType = model.MainImage.ContentType
+                };
+            }
+            if (model.Gallery != null)
+            {
+                foreach (var img in model.Gallery)
                 {
                     using var ms = new MemoryStream();
                     await img.CopyToAsync(ms);
-                    dto.Images.Add(new UpdateSpaceFileCommand
+                    dto.Gallery.Add(new UpdateSpaceFileCommand
                     {
-                        Id = model.ImageId,
                         DataFiles = ms.ToArray(),
                         Name = img.FileName,
                         FileType = img.ContentType

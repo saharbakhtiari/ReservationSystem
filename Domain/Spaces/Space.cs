@@ -16,7 +16,8 @@ namespace Domain.Spaces
         public string Location { get; set; }
         public SpaceType Type { get; set; }
         public ICollection<Amenity> Amenities { get; set; }
-        public ICollection<SpaceFile> Images { get; set; }
+        public ICollection<SpaceFile> Gallery { get; set; }
+        public SpaceFile MainImage { get; set; }
         public string IsActive { get; set; }
         public bool IsDeleted { get; set; }
 
@@ -30,7 +31,7 @@ namespace Domain.Spaces
             DomainService.OwnerEntity = this;
             Repository.OwnerEntity = this;
             Amenities = new HashSet<Amenity>();
-            Images = new HashSet<SpaceFile>();
+            Gallery = new HashSet<SpaceFile>();
         }
 
         public override async Task SaveAsync(CancellationToken cancellationToken)
@@ -42,6 +43,29 @@ namespace Domain.Spaces
         {
             var repository = ServiceLocator.ServiceProvider.GetService<ISpaceRepository>();
             var item = await repository.GetAsync(id, cancellationToken);
+            if (item is not null)
+            {
+                item.Repository = repository;
+                item.Repository.OwnerEntity = item;
+            }
+            return item;
+        }
+
+        public static async Task<Space> GetIncludedAsync(long id, CancellationToken cancellationToken)
+        {
+            var repository = ServiceLocator.ServiceProvider.GetService<ISpaceRepository>();
+            var item = await repository.GetIncludedAsync(id, cancellationToken);
+            if (item is not null)
+            {
+                item.Repository = repository;
+                item.Repository.OwnerEntity = item;
+            }
+            return item;
+        }
+        public static async Task<Space> GetIncludedAmenityAsync(long id, CancellationToken cancellationToken)
+        {
+            var repository = ServiceLocator.ServiceProvider.GetService<ISpaceRepository>();
+            var item = await repository.GetIncludedAmenityAsync(id, cancellationToken);
             if (item is not null)
             {
                 item.Repository = repository;

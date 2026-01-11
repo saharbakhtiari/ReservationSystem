@@ -42,5 +42,17 @@ namespace Domain.Amenitys
             }
             return item;
         }
+
+        public static async Task<Amenity> GetIncludedAsync(long id, CancellationToken cancellationToken)
+        {
+            var repository = ServiceLocator.ServiceProvider.GetService<IAmenityRepository>();
+            var item = await repository.GetIncludedAsync(id, cancellationToken);
+            if (item is not null)
+            {
+                item.Repository = repository;
+                item.Repository.OwnerEntity = item;
+            }
+            return item;
+        }
     }
 }

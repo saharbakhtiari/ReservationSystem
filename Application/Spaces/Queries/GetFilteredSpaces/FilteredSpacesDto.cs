@@ -13,7 +13,8 @@ namespace Application.Spaces.Queries.GetFilteredSpaces
         public int Capacity { get; set; }
         public string Location { get; set; }
         public SpaceType Type { get; set; }
-        public List<FilteredSpacesFileDto> Images { get; set; }
+        public FilteredSpacesFileDto MainImage { get; set; }
+        //public List<FilteredSpacesFileDto> Gallery { get; set; }
     }
 
     public class FilteredSpacesFileDto
@@ -23,6 +24,5 @@ namespace Application.Spaces.Queries.GetFilteredSpaces
         public string Name { get; set; }
         public string FileType { get; set; }
         public byte[] DataFiles { get; set; }
-        public int Order { get; set; }
     }
 }

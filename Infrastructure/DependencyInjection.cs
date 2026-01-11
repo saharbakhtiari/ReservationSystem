@@ -1,4 +1,5 @@
-﻿using Domain.Cartables;
+﻿using Domain.Amenitys;
+using Domain.Cartables;
 using Domain.Common;
 using Domain.Externals.CMRServer;
 using Domain.Externals.MavaServer;
@@ -9,10 +10,12 @@ using Domain.SeoSms;
 using Domain.Settings;
 using Domain.SliderFiles;
 using Domain.Sliders;
+using Domain.SpaceFiles;
 using Domain.Spaces;
 using Domain.UnitOfWork.Uow;
 using Domain.Users;
 using Extensions;
+using Infrastructure.Amenitys;
 using Infrastructure.Cartables;
 using Infrastructure.Externals;
 using Infrastructure.Externals.CMRServer;
@@ -25,6 +28,7 @@ using Infrastructure.SeoSmss;
 using Infrastructure.Settings;
 using Infrastructure.SliderFiles;
 using Infrastructure.Sliders;
+using Infrastructure.SpaceFiles;
 using Infrastructure.Spaces;
 using Infrastructure.UnitOfWork.EfCore.EntityFrameworkCore;
 using Infrastructure.UnitOfWork.EfCore.Extensions.DependencyInjection;
@@ -78,6 +82,8 @@ namespace Infrastructure
             services.AddTransient<IMavaRequestRepository, MavaRequestRepository>();
             services.AddTransient<ICartableRepository, CartableRepository>();
             services.AddTransient<ISpaceRepository, SpaceRepository>();
+            services.AddTransient<ISpaceFileRepository, SpaceFileRepository>();
+            services.AddTransient<IAmenityRepository, AmenityRepository>();
 
 
             services.AddTransientWithName<IFileStorage, FileDBStorage>("DB");

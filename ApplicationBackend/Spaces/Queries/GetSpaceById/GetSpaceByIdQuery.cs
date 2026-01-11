@@ -22,7 +22,7 @@ namespace Application_Backend.Spaces.Queries.GetSpace
 
         public async Task<GetSpaceByIdDto> Handle(GetSpaceByIdQuery request, CancellationToken cancellationToken)
         {
-            var space = await Space.GetAsync(request.Id, cancellationToken) ?? throw new UserFriendlyException(_localizer["Space not found"]);
+            var space = await Space.GetIncludedAsync(request.Id, cancellationToken) ?? throw new UserFriendlyException(_localizer["Space not found"]);
             return _mapper.Map<GetSpaceByIdDto>(space);
         }
     }

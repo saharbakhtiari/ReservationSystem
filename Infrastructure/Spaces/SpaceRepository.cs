@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Common;
-using Domain.Contract.Enums;
 using Domain.Spaces;
 using Extensions;
 using Infrastructure.Common;
@@ -25,7 +24,21 @@ namespace Infrastructure.Spaces
             return GetAllAsQueryable()
                 .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted, cancellationToken);
         }
-        public Task<PagedList<TOutput>> GetFilteredAsync<TOutput>( string filter, string sort, int PageNumber, int PageSize, CancellationToken cancellationToken)
+        public Task<Space> GetIncludedAmenityAsync(long id, CancellationToken cancellationToken)
+        {
+            return GetAllAsQueryable()
+                .Include(a => a.Amenities).ThenInclude(a => a.Icon)
+                .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted, cancellationToken);
+        }
+        public Task<Space> GetIncludedAsync(long id, CancellationToken cancellationToken)
+        {
+            return GetAllAsQueryable()
+                .Include(a => a.Gallery)
+                .Include(a => a.MainImage)
+                .Include(a => a.Amenities).ThenInclude(a => a.Icon)
+                .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted, cancellationToken);
+        }
+        public Task<PagedList<TOutput>> GetFilteredAsync<TOutput>(string filter, string sort, int PageNumber, int PageSize, CancellationToken cancellationToken)
         {
             var mapper = ServiceLocator.ServiceProvider.GetService<IMapper>();
             return GetAllAsQueryable()

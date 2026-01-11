@@ -16,7 +16,12 @@ namespace Application.Spaces.Commands.CreateSpace
         public string Location { get; set; }
         public SpaceType Type { get; set; }
         public List<long> AmenityIds { get; set; }
-        public List<CreateSpaceFileCommand> Images { get; set; }
+        public List<CreateSpaceFileCommand> Gallery { get; set; }
+        public CreateSpaceFileCommand MainImage { get; set; }
+        public CreateSpaceCommand()
+        {
+            Gallery = new();
+        }
     }
     public class CreateSpaceFileCommand
     {
@@ -24,7 +29,6 @@ namespace Application.Spaces.Commands.CreateSpace
         public string Name { get; set; }
         public string FileType { get; set; }
         public byte[] DataFiles { get; set; }
-        public int Order { get; set; }
     }
 
     public class CreateSpaceRequest
@@ -34,6 +38,7 @@ namespace Application.Spaces.Commands.CreateSpace
         public string Location { get; set; }
         public SpaceType Type { get; set; }
         public List<long> AmenityIds { get; set; }
-        public List<IFormFile> Images { get; set; }
+        public List<IFormFile> Gallery { get; set; }
+        public IFormFile MainImage { get; set; }
     }
 }
