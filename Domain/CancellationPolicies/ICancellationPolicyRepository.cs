@@ -8,5 +8,6 @@ namespace Domain.CancellationPolicys
     {
         Task<CancellationPolicy> GetAsync(long id, CancellationToken cancellationToken);
         Task<PagedList<TOutput>> GetFilteredAsync<TOutput>(string filter, string sort, int PageNumber, int PageSize, CancellationToken cancellationToken);
+        Task<CancellationPolicy> GetIncludedAsync(long id, CancellationToken cancellationToken);
     }
 }

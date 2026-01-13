@@ -1,4 +1,5 @@
 ﻿using Domain.Amenitys;
+using Domain.CancellationPolicys;
 using Domain.Cartables;
 using Domain.Common;
 using Domain.Externals.CMRServer;
@@ -12,10 +13,12 @@ using Domain.SliderFiles;
 using Domain.Sliders;
 using Domain.SpaceFiles;
 using Domain.Spaces;
+using Domain.Tariffs;
 using Domain.UnitOfWork.Uow;
 using Domain.Users;
 using Extensions;
 using Infrastructure.Amenitys;
+using Infrastructure.CancellationPolicys;
 using Infrastructure.Cartables;
 using Infrastructure.Externals;
 using Infrastructure.Externals.CMRServer;
@@ -30,6 +33,7 @@ using Infrastructure.SliderFiles;
 using Infrastructure.Sliders;
 using Infrastructure.SpaceFiles;
 using Infrastructure.Spaces;
+using Infrastructure.Tariffs;
 using Infrastructure.UnitOfWork.EfCore.EntityFrameworkCore;
 using Infrastructure.UnitOfWork.EfCore.Extensions.DependencyInjection;
 using Infrastructure.UnitOfWork.EfCore.Uow.EntityFrameworkCore;
@@ -84,6 +88,8 @@ namespace Infrastructure
             services.AddTransient<ISpaceRepository, SpaceRepository>();
             services.AddTransient<ISpaceFileRepository, SpaceFileRepository>();
             services.AddTransient<IAmenityRepository, AmenityRepository>();
+            services.AddTransient<ITariffRepository, TariffRepository>();
+            services.AddTransient<ICancellationPolicyRepository, CancellationPolicyRepository>();
 
 
             services.AddTransientWithName<IFileStorage, FileDBStorage>("DB");

@@ -267,6 +267,50 @@ namespace Infrastructure.Migrations
                     b.ToTable("Booking");
                 });
 
+            modelBuilder.Entity("Domain.CancellationPolicys.CancellationPolicy", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<Guid?>("CreatedUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FreeCancelUntilHours")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<Guid?>("LastModifiedUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("LastModifiedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("NoShowPenalty")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PenaltyPercentAfter")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("TariffId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TariffId");
+
+                    b.ToTable("CancellationPolicy");
+                });
+
             modelBuilder.Entity("Domain.Cartables.Cartable", b =>
                 {
                     b.Property<long>("Id")
@@ -1270,6 +1314,15 @@ namespace Infrastructure.Migrations
                     b.Navigation("Space");
                 });
 
+            modelBuilder.Entity("Domain.CancellationPolicys.CancellationPolicy", b =>
+                {
+                    b.HasOne("Domain.Tariffs.Tariff", "Tariff")
+                        .WithMany()
+                        .HasForeignKey("TariffId");
+
+                    b.Navigation("Tariff");
+                });
+
             modelBuilder.Entity("Domain.Footers.Footer", b =>
                 {
                     b.OwnsMany("Domain.Footers.FooterLink", "Links", b1 =>
@@ -1346,7 +1399,7 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Tariffs.Tariff", b =>
                 {
                     b.HasOne("Domain.Spaces.Space", "Space")
-                        .WithMany()
+                        .WithMany("Tariffs")
                         .HasForeignKey("SpaceId");
 
                     b.Navigation("Space");
@@ -1406,6 +1459,8 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Spaces.Space", b =>
                 {
                     b.Navigation("Gallery");
+
+                    b.Navigation("Tariffs");
                 });
 #pragma warning restore 612, 618
         }

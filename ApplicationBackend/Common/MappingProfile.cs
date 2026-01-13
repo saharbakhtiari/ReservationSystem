@@ -3,6 +3,10 @@ using Application.Amenities.Queries.GetFilteredAmenities;
 using Application.Amenitys.Commands.CreateAmenity;
 using Application.Amenitys.Commands.UpdateAmenity;
 using Application.Amenitys.Queries.GetAmenity;
+using Application.CancellationPolicys.Commands.CreateCancellationPolicy;
+using Application.CancellationPolicys.Commands.UpdateCancellationPolicy;
+using Application.CancellationPolicys.Queries.GetCancellationPolicy;
+using Application.CancellationPolicys.Queries.GetFilteredCancellationPolicys;
 using Application.Cartable.Commands.CreateCartable;
 using Application.Cartable.Commands.UpdateCartable;
 using Application.Cartable.Queries.GetCartableById;
@@ -27,6 +31,10 @@ using Application.Spaces.Commands.CreateSpace;
 using Application.Spaces.Commands.UpdateSpace;
 using Application.Spaces.Queries.GetFilteredSpaces;
 using Application.Spaces.Queries.GetSpace;
+using Application.Tariffs.Commands.CreateTariff;
+using Application.Tariffs.Commands.UpdateTariff;
+using Application.Tariffs.Queries.GetFilteredTariffs;
+using Application.Tariffs.Queries.GetTariff;
 using Application.UserManagers.Commands.CreateUser;
 using Application.UserManagers.Commands.EditPhoneNumber;
 using Application.UserManagers.Commands.EditRegisteredUser;
@@ -36,6 +44,7 @@ using Application.UserManagers.Commands.VerifyRegisteration;
 using AutoMapper;
 using Domain.AdvanceSearchs;
 using Domain.Amenitys;
+using Domain.CancellationPolicys;
 using Domain.Common.Mappings;
 using Domain.Footers;
 using Domain.Headers;
@@ -45,6 +54,7 @@ using Domain.SliderFiles;
 using Domain.Sliders;
 using Domain.SpaceFiles;
 using Domain.Spaces;
+using Domain.Tariffs;
 using Domain.Users;
 using System;
 using System.Linq;
@@ -186,6 +196,24 @@ namespace Application_Backend.Common
             CreateMap<SpaceFile, GetAmenityByIdFileDto>();
             CreateMap<Amenity, FilteredAmenitiesDto>();
             CreateMap<SpaceFile, FilteredAmenitiesFileDto>();
+            #endregion
+
+            #region Tariff
+            CreateMap<CreateTariffCommand, Tariff>();
+            CreateMap<UpdateTariffCommand, Tariff>();
+            CreateMap<Tariff, GetTariffByIdDto>();
+            CreateMap<Space, GetTariffByIdSpaceDto>();
+            CreateMap<Tariff, FilteredTariffsDto>();
+            #endregion
+
+
+            #region CancellationPolicy
+            CreateMap<CreateCancellationPolicyCommand, CancellationPolicy>();
+            CreateMap<UpdateCancellationPolicyCommand, CancellationPolicy>();
+            CreateMap<CancellationPolicy, GetCancellationPolicyByIdDto>();
+            CreateMap<Tariff, GetCancellationPolicyByIdTariffDto>();
+            CreateMap<CancellationPolicy, FilteredCancellationPolicysDto>();
+            
             #endregion
         }
 

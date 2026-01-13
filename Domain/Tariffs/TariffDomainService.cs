@@ -1,5 +1,9 @@
-﻿using Domain.UnitOfWork.Uow;
+﻿using Domain.Spaces;
+using Domain.UnitOfWork.Uow;
+using Exceptions;
 using Microsoft.Extensions.Localization;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Domain.Tariffs
 {
@@ -16,6 +20,13 @@ namespace Domain.Tariffs
 
         public Tariff OwnerEntity { get; set; }
 
-
+        public async Task SetSpace(long spaceId, CancellationToken cancellationToken)
+        {
+            if (spaceId > 0)
+            {
+                var space = await Space.GetAsync(spaceId, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]); ;
+                OwnerEntity.Space = space;
+            }
+        }
     }
 }

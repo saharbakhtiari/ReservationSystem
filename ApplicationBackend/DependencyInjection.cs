@@ -3,6 +3,7 @@ using Application_Backend.Common.Behaviours;
 using Application_Backend.Common.Notifications;
 using Application_Backend.Rules.Commands.AddRuleVersion;
 using Domain.Amenitys;
+using Domain.CancellationPolicys;
 using Domain.Cartables;
 using Domain.Common;
 using Domain.Externals.CMRServer;
@@ -15,6 +16,7 @@ using Domain.SliderFiles;
 using Domain.Sliders;
 using Domain.SpaceFiles;
 using Domain.Spaces;
+using Domain.Tariffs;
 using Domain.UnitOfWork.Uow;
 using FluentValidation;
 using MediatR;
@@ -59,6 +61,8 @@ namespace Application_Backend
             services.AddTransient(typeof(ISpaceDomainService), typeof(SpaceDomainService));
             services.AddTransient(typeof(ISpaceFileDomainService), typeof(SpaceFileDomainService));
             services.AddTransient(typeof(IAmenityDomainService), typeof(AmenityDomainService));
+            services.AddTransient(typeof(ITariffDomainService), typeof(TariffDomainService));
+            services.AddTransient(typeof(ICancellationPolicyDomainService), typeof(CancellationPolicyDomainService));
             services.AddNotificationConfig(options =>
             {
                 configuration.GetSection("Notification").Bind(options);

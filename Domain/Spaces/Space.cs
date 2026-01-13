@@ -2,6 +2,7 @@
 using Domain.Common;
 using Domain.Contract.Enums;
 using Domain.SpaceFiles;
+using Domain.Tariffs;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -17,6 +18,7 @@ namespace Domain.Spaces
         public SpaceType Type { get; set; }
         public ICollection<Amenity> Amenities { get; set; }
         public ICollection<SpaceFile> Gallery { get; set; }
+        public ICollection<Tariff> Tariffs { get; set; }
         public SpaceFile MainImage { get; set; }
         public string IsActive { get; set; }
         public bool IsDeleted { get; set; }

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Common;
-using Domain.Contract.Enums;
 using Domain.Tariffs;
 using Extensions;
 using Infrastructure.Common;
@@ -25,7 +24,14 @@ namespace Infrastructure.Tariffs
             return GetAllAsQueryable()
                 .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted, cancellationToken);
         }
-        public Task<PagedList<TOutput>> GetFilteredAsync<TOutput>( string filter, string sort, int PageNumber, int PageSize, CancellationToken cancellationToken)
+
+        public Task<Tariff> GetIncludedAsync(long id, CancellationToken cancellationToken)
+        {
+            return GetAllAsQueryable()
+                .Include(a => a.Space)
+                .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted, cancellationToken);
+        }
+        public Task<PagedList<TOutput>> GetFilteredAsync<TOutput>(string filter, string sort, int PageNumber, int PageSize, CancellationToken cancellationToken)
         {
             var mapper = ServiceLocator.ServiceProvider.GetService<IMapper>();
             return GetAllAsQueryable()

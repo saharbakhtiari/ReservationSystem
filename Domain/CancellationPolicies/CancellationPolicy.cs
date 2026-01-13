@@ -13,7 +13,6 @@ namespace Domain.CancellationPolicys
 {
     public class CancellationPolicy : AuditableEntity
     {
-        public Space Space { get; set; } = null!;
         public Tariff Tariff { get; set; } = null!;
         public int FreeCancelUntilHours { get; set; }
         public int PenaltyPercentAfter { get; set; }
@@ -40,6 +39,18 @@ namespace Domain.CancellationPolicys
         {
             var repository = ServiceLocator.ServiceProvider.GetService<ICancellationPolicyRepository>();
             var item = await repository.GetAsync(id, cancellationToken);
+            if (item is not null)
+            {
+                item.Repository = repository;
+                item.Repository.OwnerEntity = item;
+            }
+            return item;
+        }
+
+        public static async Task<CancellationPolicy> GetIncludedAsync(long id, CancellationToken cancellationToken)
+        {
+            var repository = ServiceLocator.ServiceProvider.GetService<ICancellationPolicyRepository>();
+            var item = await repository.GetIncludedAsync(id, cancellationToken);
             if (item is not null)
             {
                 item.Repository = repository;

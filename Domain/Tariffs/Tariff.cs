@@ -46,5 +46,17 @@ namespace Domain.Tariffs
             }
             return item;
         }
+
+        public static async Task<Tariff> GetIncludedAsync(long id, CancellationToken cancellationToken)
+        {
+            var repository = ServiceLocator.ServiceProvider.GetService<ITariffRepository>();
+            var item = await repository.GetIncludedAsync(id, cancellationToken);
+            if (item is not null)
+            {
+                item.Repository = repository;
+                item.Repository.OwnerEntity = item;
+            }
+            return item;
+        }
     }
 }

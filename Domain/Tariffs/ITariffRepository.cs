@@ -8,5 +8,6 @@ namespace Domain.Tariffs
     {
         Task<Tariff> GetAsync(long id, CancellationToken cancellationToken);
         Task<PagedList<TOutput>> GetFilteredAsync<TOutput>(string filter, string sort, int PageNumber, int PageSize, CancellationToken cancellationToken);
+        Task<Tariff> GetIncludedAsync(long id, CancellationToken cancellationToken);
     }
 }

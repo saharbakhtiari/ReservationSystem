@@ -1,12 +1,12 @@
-﻿using Domain.Tariffs;
+﻿using Domain.CancellationPolicys;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Tariffs
+namespace Infrastructure.CancellationPolicys
 {
-    public class TariffrConfiguration : IEntityTypeConfiguration<Tariff>
+    public class CancellationPolicyrConfiguration : IEntityTypeConfiguration<CancellationPolicy>
     {
-        public void Configure(EntityTypeBuilder<Tariff> builder)
+        public void Configure(EntityTypeBuilder<CancellationPolicy> builder)
         {
             builder.Ignore(c => c.Repository);
             builder.Ignore(c => c.DomainService);

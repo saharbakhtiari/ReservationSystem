@@ -1,5 +1,10 @@
-﻿using Domain.UnitOfWork.Uow;
+﻿using Domain.Spaces;
+using Domain.UnitOfWork.Uow;
+using Exceptions;
 using Microsoft.Extensions.Localization;
+using System.Threading.Tasks;
+using System.Threading;
+using Domain.Tariffs;
 
 namespace Domain.CancellationPolicys
 {
@@ -15,7 +20,14 @@ namespace Domain.CancellationPolicys
         }
 
         public CancellationPolicy OwnerEntity { get; set; }
-
+        public async Task SetTariff(long tariffId, CancellationToken cancellationToken)
+        {
+            if (tariffId > 0)
+            {
+                var space = await Tariff.GetAsync(tariffId, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]); ;
+                OwnerEntity.Tariff = space;
+            }
+        }
 
     }
 }
