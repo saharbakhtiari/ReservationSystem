@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Domain.Common;
-using Domain.Contract.Enums;
 using Domain.Bookings;
+using Domain.Common;
 using Extensions;
 using Infrastructure.Common;
 using Infrastructure.Persistence;
@@ -25,12 +24,19 @@ namespace Infrastructure.Bookings
             return GetAllAsQueryable()
                 .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted, cancellationToken);
         }
-        public Task<PagedList<TOutput>> GetFilteredAsync<TOutput>( string filter, string sort, int PageNumber, int PageSize, CancellationToken cancellationToken)
+        public Task<Booking> GetIncludedAsync(long id, CancellationToken cancellationToken)
+        {
+            return GetAllAsQueryable()
+                .Include(a => a.Space)
+                .Include(a => a.Profile)
+                .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted, cancellationToken);
+        }
+        public Task<PagedList<TOutput>> GetFilteredAsync<TOutput>(string filter, string sort, int PageNumber, int PageSize, CancellationToken cancellationToken)
         {
             var mapper = ServiceLocator.ServiceProvider.GetService<IMapper>();
             return GetAllAsQueryable()
                 .Where(x => !x.IsDeleted)
-                .WhereIf(filter.IsNullOrWhiteSpace().Not(), r => r.Profile.PhoneNumber.Contains(filter)|| r.Space.Title.Contains(filter))
+                .WhereIf(filter.IsNullOrWhiteSpace().Not(), r => r.Profile.PhoneNumber.Contains(filter) || r.Space.Title.Contains(filter))
                 .OrderByIf(sort.IsNullOrWhiteSpace().Not(), sort)
                 .ProjectTo<TOutput>(mapper.ConfigurationProvider)
                 .ToPagedList(PageNumber, PageSize, cancellationToken);

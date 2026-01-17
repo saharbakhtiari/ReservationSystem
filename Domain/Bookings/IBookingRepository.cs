@@ -8,5 +8,6 @@ namespace Domain.Bookings
     {
         Task<Booking> GetAsync(long id, CancellationToken cancellationToken);
         Task<PagedList<TOutput>> GetFilteredAsync<TOutput>(string filter, string sort, int PageNumber, int PageSize, CancellationToken cancellationToken);
+        Task<Booking> GetIncludedAsync(long id, CancellationToken cancellationToken);
     }
 }

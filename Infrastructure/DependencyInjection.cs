@@ -1,4 +1,5 @@
 ﻿using Domain.Amenitys;
+using Domain.Bookings;
 using Domain.CancellationPolicys;
 using Domain.Cartables;
 using Domain.Common;
@@ -18,6 +19,7 @@ using Domain.UnitOfWork.Uow;
 using Domain.Users;
 using Extensions;
 using Infrastructure.Amenitys;
+using Infrastructure.Bookings;
 using Infrastructure.CancellationPolicys;
 using Infrastructure.Cartables;
 using Infrastructure.Externals;
@@ -89,6 +91,7 @@ namespace Infrastructure
             services.AddTransient<ISpaceFileRepository, SpaceFileRepository>();
             services.AddTransient<IAmenityRepository, AmenityRepository>();
             services.AddTransient<ITariffRepository, TariffRepository>();
+            services.AddTransient<IBookingRepository, BookingRepository>();
             services.AddTransient<ICancellationPolicyRepository, CancellationPolicyRepository>();
 
 

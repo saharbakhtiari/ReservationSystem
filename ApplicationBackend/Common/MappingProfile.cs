@@ -3,6 +3,10 @@ using Application.Amenities.Queries.GetFilteredAmenities;
 using Application.Amenitys.Commands.CreateAmenity;
 using Application.Amenitys.Commands.UpdateAmenity;
 using Application.Amenitys.Queries.GetAmenity;
+using Application.Bookings.Commands.CreateBooking;
+using Application.Bookings.Commands.UpdateBooking;
+using Application.Bookings.Queries.GetBooking;
+using Application.Bookings.Queries.GetFilteredBookings;
 using Application.CancellationPolicys.Commands.CreateCancellationPolicy;
 using Application.CancellationPolicys.Commands.UpdateCancellationPolicy;
 using Application.CancellationPolicys.Queries.GetCancellationPolicy;
@@ -44,6 +48,7 @@ using Application.UserManagers.Commands.VerifyRegisteration;
 using AutoMapper;
 using Domain.AdvanceSearchs;
 using Domain.Amenitys;
+using Domain.Bookings;
 using Domain.CancellationPolicys;
 using Domain.Common.Mappings;
 using Domain.Footers;
@@ -213,7 +218,20 @@ namespace Application_Backend.Common
             CreateMap<CancellationPolicy, GetCancellationPolicyByIdDto>();
             CreateMap<Tariff, GetCancellationPolicyByIdTariffDto>();
             CreateMap<CancellationPolicy, FilteredCancellationPolicysDto>();
-            
+
+            #endregion
+
+
+            #region Booking
+            CreateMap<CreateBookingCommand, Booking>();
+            CreateMap<UpdateBookingCommand, Booking>();
+            CreateMap<Booking, GetBookingByIdDto>();
+            CreateMap<Space, GetBookingByIdSpaceDto>();
+            CreateMap<MemberProfile, GetBookingByIdProfileDto>();
+            CreateMap<Booking, FilteredBookingsDto>()
+                .ForMember(a => a.ProfileUserName, opt => opt.MapFrom(p => p.Profile.UserName))
+                .ForMember(a => a.SpaceTitle, opt => opt.MapFrom(p => p.Space.Title));
+
             #endregion
         }
 

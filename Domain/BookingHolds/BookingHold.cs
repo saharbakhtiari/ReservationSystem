@@ -16,6 +16,7 @@ namespace Domain.BookingHolds
         public DateTime EndAt { get; set; }
         public string Token { get; set; }
         public DateTime ExpireAt { get; set; }
+        public BookingHoldStatus Status { get; set; }
         public bool IsDeleted { get; set; }
 
         public IBookingHoldDomainService DomainService { get; set; }

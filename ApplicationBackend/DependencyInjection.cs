@@ -3,6 +3,7 @@ using Application_Backend.Common.Behaviours;
 using Application_Backend.Common.Notifications;
 using Application_Backend.Rules.Commands.AddRuleVersion;
 using Domain.Amenitys;
+using Domain.Bookings;
 using Domain.CancellationPolicys;
 using Domain.Cartables;
 using Domain.Common;
@@ -62,6 +63,7 @@ namespace Application_Backend
             services.AddTransient(typeof(ISpaceFileDomainService), typeof(SpaceFileDomainService));
             services.AddTransient(typeof(IAmenityDomainService), typeof(AmenityDomainService));
             services.AddTransient(typeof(ITariffDomainService), typeof(TariffDomainService));
+            services.AddTransient(typeof(IBookingDomainService), typeof(BookingDomainService));
             services.AddTransient(typeof(ICancellationPolicyDomainService), typeof(CancellationPolicyDomainService));
             services.AddNotificationConfig(options =>
             {
