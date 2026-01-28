@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.UserManagers.Commands.CreateUser
 {
-    [Authorize(Roles = DefaultRoleNames.Admin, Permissions = PermissionNames.Manager_UserManager)]
+    //[Authorize(Roles = DefaultRoleNames.Admin, Permissions = PermissionNames.Manager_UserManager)]
     public class CreateUserCommand : IRequest
     {
         public string FirstName { get; set; }

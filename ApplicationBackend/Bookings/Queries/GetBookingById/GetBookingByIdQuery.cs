@@ -22,7 +22,7 @@ namespace Application_Backend.Bookings.Queries.GetBooking
 
         public async Task<GetBookingByIdDto> Handle(GetBookingByIdQuery request, CancellationToken cancellationToken)
         {
-            var tariff = await Booking.GetIncludedAsync(request.Id, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
+            var tariff = await Booking.GetIncludedAsync(request.Id, false, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
             return _mapper.Map<GetBookingByIdDto>(tariff);
         }
     }

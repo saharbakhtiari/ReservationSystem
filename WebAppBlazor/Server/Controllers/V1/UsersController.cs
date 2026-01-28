@@ -95,8 +95,8 @@ namespace WebAppBlazor.Server.Controllers
         [ValidateDNTCaptcha]
         public async Task<IActionResult> LoginUser([FromForm] LoginUserCommand dto)
         {
-            if (!ModelState.IsValid)
-                throw new UserFriendlyException("کد امنیتی به درستی وارد نشده است");
+            //if (!ModelState.IsValid)
+            //    throw new UserFriendlyException("کد امنیتی به درستی وارد نشده است");
             var output = await Mediator.SendWithUow(dto);
             Response.Cookies.Append("X-Access-Token", output.AccessToken, new CookieOptions() { HttpOnly = true, MaxAge = TimeSpan.FromHours(1), SameSite = SameSiteMode.None, Secure = true, IsEssential = true });
          

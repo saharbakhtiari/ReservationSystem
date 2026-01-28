@@ -46,5 +46,17 @@ namespace Domain.BookingHolds
             }
             return item;
         }
+
+        public static async Task<BookingHold> GetIncludedAsync(long id, CancellationToken cancellationToken)
+        {
+            var repository = ServiceLocator.ServiceProvider.GetService<IBookingHoldRepository>();
+            var item = await repository.GetIncludedAsync(id, cancellationToken);
+            if (item is not null)
+            {
+                item.Repository = repository;
+                item.Repository.OwnerEntity = item;
+            }
+            return item;
+        }
     }
 }

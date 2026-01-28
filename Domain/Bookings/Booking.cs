@@ -54,10 +54,10 @@ namespace Domain.Bookings
             return item;
         }
 
-        public static async Task<Booking> GetIncludedAsync(long id, CancellationToken cancellationToken)
+        public static async Task<Booking> GetIncludedAsync(long id,bool isAdmin, CancellationToken cancellationToken)
         {
             var repository = ServiceLocator.ServiceProvider.GetService<IBookingRepository>();
-            var item = await repository.GetIncludedAsync(id, cancellationToken);
+            var item = await repository.GetIncludedAsync(id,isAdmin, cancellationToken);
             if (item is not null)
             {
                 item.Repository = repository;

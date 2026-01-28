@@ -11,7 +11,7 @@ namespace Application_Backend.Bookings.Queries.GetFilteredSpace
     {
         public Task<PagedList<FilteredBookingsDto>> Handle(GetFilteredBookingsQuery request, CancellationToken cancellationToken)
         {
-            return new Booking().Repository.GetFilteredAsync<FilteredBookingsDto>(request.Filter, request.Sort, request.PageNumber, request.PageSize, cancellationToken);
+            return new Booking().Repository.GetFilteredAsync<FilteredBookingsDto>(request.Filter, request.Sort, request.PageNumber, request.PageSize, false, cancellationToken);
         }
     }
 }
