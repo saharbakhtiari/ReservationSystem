@@ -3,6 +3,7 @@ using Domain.Common;
 using Domain.Contract.Enums;
 using Domain.SpaceFiles;
 using Domain.Tariffs;
+using Domain.TimeSlots;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -19,6 +20,7 @@ namespace Domain.Spaces
         public ICollection<Amenity> Amenities { get; set; }
         public ICollection<SpaceFile> Gallery { get; set; }
         public ICollection<Tariff> Tariffs { get; set; }
+        public ICollection<TimeSlot> TimeSlots { get; set; }
         public SpaceFile MainImage { get; set; }
         public string IsActive { get; set; }
         public bool IsDeleted { get; set; }
@@ -34,6 +36,7 @@ namespace Domain.Spaces
             Repository.OwnerEntity = this;
             Amenities = new HashSet<Amenity>();
             Gallery = new HashSet<SpaceFile>();
+            TimeSlots = new HashSet<TimeSlot>();
         }
 
         public override async Task SaveAsync(CancellationToken cancellationToken)

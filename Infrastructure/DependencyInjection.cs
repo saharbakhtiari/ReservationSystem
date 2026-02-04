@@ -16,6 +16,7 @@ using Domain.Sliders;
 using Domain.SpaceFiles;
 using Domain.Spaces;
 using Domain.Tariffs;
+using Domain.TimeSlots;
 using Domain.UnitOfWork.Uow;
 using Domain.Users;
 using Extensions;
@@ -38,6 +39,7 @@ using Infrastructure.Sliders;
 using Infrastructure.SpaceFiles;
 using Infrastructure.Spaces;
 using Infrastructure.Tariffs;
+using Infrastructure.TimeSlots;
 using Infrastructure.UnitOfWork.EfCore.EntityFrameworkCore;
 using Infrastructure.UnitOfWork.EfCore.Extensions.DependencyInjection;
 using Infrastructure.UnitOfWork.EfCore.Uow.EntityFrameworkCore;
@@ -96,6 +98,7 @@ namespace Infrastructure
             services.AddTransient<IBookingRepository, BookingRepository>();
             services.AddTransient<IBookingHoldRepository, BookingHoldRepository>();
             services.AddTransient<ICancellationPolicyRepository, CancellationPolicyRepository>();
+            services.AddTransient<ITimeSlotRepository, TimeSlotRepository>();
 
 
             services.AddTransientWithName<IFileStorage, FileDBStorage>("DB");

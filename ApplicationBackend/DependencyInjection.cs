@@ -19,6 +19,7 @@ using Domain.Sliders;
 using Domain.SpaceFiles;
 using Domain.Spaces;
 using Domain.Tariffs;
+using Domain.TimeSlots;
 using Domain.UnitOfWork.Uow;
 using FluentValidation;
 using MediatR;
@@ -67,6 +68,7 @@ namespace Application_Backend
             services.AddTransient(typeof(IBookingDomainService), typeof(BookingDomainService));
             services.AddTransient(typeof(IBookingHoldDomainService), typeof(BookingHoldDomainService));
             services.AddTransient(typeof(ICancellationPolicyDomainService), typeof(CancellationPolicyDomainService));
+            services.AddTransient(typeof(ITimeSlotDomainService), typeof(TimeSlotDomainService));
             services.AddNotificationConfig(options =>
             {
                 configuration.GetSection("Notification").Bind(options);

@@ -11,14 +11,11 @@ namespace Application.Bookings.Commands.CreateBooking
     public class CreateBookingCommand : IRequest<long>
     {
         public long SpaceId { get; set; } 
-        public DateTime StartAt { get; set; }
-        public DateTime EndAt { get; set; }
-        public BookingStatus Status { get; set; }
-        public decimal TotalAmount { get; set; }
-        public Currency Currency { get; set; }
-        public string PriceSnapshot { get; set; }
-        public string PolicySnapshot { get; set; }
-        public DateTime ConfirmedAt { get; set; }
-        public DateTime CancelledAt { get; set; }
+        public long TariffId { get; set; }
+        public TimeSpan StartAt { get; set; }
+        public TimeSpan EndAt { get; set; }
+        public DateTime SlotDate { get; set; }
+        public TimeSlotType Status { get; set; }
+        public bool IsBooked { get; set; }
     }
 }
