@@ -1,41 +1,45 @@
 ﻿using Domain.Contract.Enums;
+using Domain.Spaces;
+using Domain.Tariffs;
 using System;
 
-namespace Application.BookingHolds.Queries.GetBookingHold
+namespace Application.AdminBookingHolds.Queries.GetAdminBookingHold
 {
-    public class GetBookingHoldByIdDto
+    public class GetAdminBookingHoldByIdDto
     {
         public long Id { get; set; }
-        public GetBookingHoldByIdProfileDto Profile { get; set; }
-        public GetBookingHoldByIdTimeSlotDto TimeSlot { get; set; }
+        public GetAdminBookingHoldByIdSpaceDto Space { get; set; }
+        public GetAdminBookingHoldByIdProfileDto Profile { get; set; }
+        public GetAdminBookingHoldByIdTimeSlotDto TimeSlot { get; set; }
         public string Token { get; set; }
         public DateTime ExpireAt { get; set; }
         public BookingHoldStatus Status { get; set; }
     }
-    public class GetBookingHoldByIdSpaceDto
+    public class GetAdminBookingHoldByIdSpaceDto
     {
         public long Id { get; set; }
         public string Title { get; set; }
         public SpaceType Type { get; set; }
     }
-    public class GetBookingHoldByIdTariffDto
+    public class GetAdminBookingHoldByIdTariffDto
     {
-        public long Id { get; set; }
         public decimal Price { get; set; }
         public Currency Currency { get; set; }
         public TariffUnit Unit { get; set; }
     }
-    public class GetBookingHoldByIdTimeSlotDto
+    public class GetAdminBookingHoldByIdTimeSlotDto
     {
         public long Id { get; set; }
-        public GetBookingHoldByIdSpaceDto Space { get; set; }
-        public GetBookingHoldByIdTariffDto Tariff { get; set; } 
+        public GetAdminBookingHoldByIdSpaceDto Space { get; set; }
+        public GetAdminBookingHoldByIdTariffDto Tariff { get; set; } = null!;
         public TimeSpan StartAt { get; set; }
         public TimeSpan EndAt { get; set; }
         public DateTime SlotDate { get; set; }
+        public bool IsBooked { get; set; }
+        public bool IsHeld { get; set; }
         public TimeSlotType Type { get; set; }
     }
-    public class GetBookingHoldByIdProfileDto
+    public class GetAdminBookingHoldByIdProfileDto
     {
         public long Id { get; set; }
         public string FirstName { get; set; }

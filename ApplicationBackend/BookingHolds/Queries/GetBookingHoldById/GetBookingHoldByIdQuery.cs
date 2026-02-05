@@ -22,8 +22,8 @@ namespace Application_Backend.BookingHolds.Queries.GetBookingHold
 
         public async Task<GetBookingHoldByIdDto> Handle(GetBookingHoldByIdQuery request, CancellationToken cancellationToken)
         {
-            var tariff = await BookingHold.GetIncludedAsync(request.Id, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
-            return _mapper.Map<GetBookingHoldByIdDto>(tariff);
+            var hold = await BookingHold.GetIncludedAsync(request.Id, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
+            return _mapper.Map<GetBookingHoldByIdDto>(hold);
         }
     }
 }

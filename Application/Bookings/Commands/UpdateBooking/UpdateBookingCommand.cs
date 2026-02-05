@@ -11,7 +11,7 @@ namespace Application.Bookings.Commands.UpdateBooking
     public class UpdateBookingCommand : IRequest
     {
         public long Id { get; set; }
-        public long SpaceId { get; set; }
+        public long TimeSlotId { get; set; }
         public DateTime StartAt { get; set; }
         public DateTime EndAt { get; set; }
         public BookingStatus Status { get; set; }

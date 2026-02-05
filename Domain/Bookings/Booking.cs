@@ -1,11 +1,8 @@
-﻿using Domain.Amenitys;
-using Domain.Common;
+﻿using Domain.Common;
 using Domain.Contract.Enums;
 using Domain.MemberProfiles;
-using Domain.SpaceFiles;
-using Domain.Spaces;
+using Domain.TimeSlots;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,7 +10,7 @@ namespace Domain.Bookings
 {
     public class Booking : AuditableEntity
     {
-        public Space Space { get; set; } = null!;
+        public TimeSlot TimeSlot { get; set; } = null!;
         public MemberProfile Profile { get; set; }
         public DateTime StartAt { get; set; }
         public DateTime EndAt { get; set; }
@@ -54,10 +51,10 @@ namespace Domain.Bookings
             return item;
         }
 
-        public static async Task<Booking> GetIncludedAsync(long id,bool isAdmin, CancellationToken cancellationToken)
+        public static async Task<Booking> GetIncludedAsync(long id, bool isAdmin, CancellationToken cancellationToken)
         {
             var repository = ServiceLocator.ServiceProvider.GetService<IBookingRepository>();
-            var item = await repository.GetIncludedAsync(id,isAdmin, cancellationToken);
+            var item = await repository.GetIncludedAsync(id, isAdmin, cancellationToken);
             if (item is not null)
             {
                 item.Repository = repository;

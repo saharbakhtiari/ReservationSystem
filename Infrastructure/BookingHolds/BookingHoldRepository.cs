@@ -27,7 +27,8 @@ namespace Infrastructure.BookingHolds
         public Task<BookingHold> GetIncludedAsync(long id, CancellationToken cancellationToken)
         {
             return GetAllAsQueryable()
-                .Include(a => a.Space)
+                .Include(a => a.TimeSlot).ThenInclude(a => a.Space)
+                .Include(a => a.TimeSlot).ThenInclude(a => a.Tariff)
                 .Include(a => a.Profile)
                 .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted, cancellationToken);
         }
@@ -36,7 +37,7 @@ namespace Infrastructure.BookingHolds
             var mapper = ServiceLocator.ServiceProvider.GetService<IMapper>();
             return GetAllAsQueryable()
                 .Where(x => !x.IsDeleted)
-                .WhereIf(filter.IsNullOrWhiteSpace().Not(), r => r.Profile.PhoneNumber.Contains(filter) || r.Space.Title.Contains(filter))
+                .WhereIf(filter.IsNullOrWhiteSpace().Not(), r => r.Profile.PhoneNumber.Contains(filter) || r.TimeSlot.Space.Title.Contains(filter))
                 .OrderByIf(sort.IsNullOrWhiteSpace().Not(), sort)
                 .ProjectTo<TOutput>(mapper.ConfigurationProvider)
                 .ToPagedList(PageNumber, PageSize, cancellationToken);

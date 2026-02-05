@@ -7,6 +7,6 @@ namespace Domain.Bookings
     public interface IBookingDomainService : IBaseDomainService<Booking>
     {
         Task SetProfile(CancellationToken cancellationToken);
-        Task SetSpace(long spaceId, CancellationToken cancellationToken);
+        Task SetTimeSlot(long slotId, CancellationToken cancellationToken);
     }
 }

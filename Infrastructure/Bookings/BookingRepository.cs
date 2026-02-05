@@ -31,7 +31,8 @@ namespace Infrastructure.Bookings
         public Task<Booking> GetIncludedAsync(long id, bool isAdmin, CancellationToken cancellationToken)
         {
             return GetAllAsQueryable()
-                .Include(a => a.Space)
+                .Include(a => a.TimeSlot).ThenInclude(a => a.Space)
+                .Include(a => a.TimeSlot).ThenInclude(a => a.Tariff)
                 .Include(a => a.Profile)
                 .WhereIf(!isAdmin, r => r.Profile.UserId == _currentUserService.UserId)
                 .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted, cancellationToken);
@@ -42,7 +43,7 @@ namespace Infrastructure.Bookings
             return GetAllAsQueryable()
                 .Where(x => !x.IsDeleted)
                 .WhereIf(!isAdmin, r => r.Profile.UserId == _currentUserService.UserId)
-                .WhereIf(filter.IsNullOrWhiteSpace().Not(), r => r.Profile.PhoneNumber.Contains(filter) || r.Space.Title.Contains(filter))
+                .WhereIf(filter.IsNullOrWhiteSpace().Not(), r => r.Profile.PhoneNumber.Contains(filter) || r.TimeSlot.Space.Title.Contains(filter))
                 .OrderByIf(sort.IsNullOrWhiteSpace().Not(), sort)
                 .ProjectTo<TOutput>(mapper.ConfigurationProvider)
                 .ToPagedList(PageNumber, PageSize, cancellationToken);

@@ -19,8 +19,8 @@ public class DeleteBookingHoldCommandHandler : IRequestHandler<DeleteBookingHold
 
     public async Task<Unit> Handle(DeleteBookingHoldCommand request, CancellationToken cancellationToken)
     {
-        var booking = await BookingHold.GetAsync(request.Id, cancellationToken) ?? throw new UserFriendlyException(_localizer["BookingHold not found"]);
-        await booking.SaveAsync(cancellationToken);
+        var hold = await BookingHold.GetAsync(request.Id, cancellationToken) ?? throw new UserFriendlyException(_localizer["BookingHold not found"]);
+        await hold.SaveAsync(cancellationToken);
         return Unit.Value;
     }
 }

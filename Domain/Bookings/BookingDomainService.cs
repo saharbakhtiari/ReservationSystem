@@ -1,6 +1,7 @@
 ﻿using Domain.Common.Interfaces;
 using Domain.MemberProfiles;
 using Domain.Spaces;
+using Domain.TimeSlots;
 using Domain.UnitOfWork.Uow;
 using Exceptions;
 using Microsoft.Extensions.Localization;
@@ -24,12 +25,16 @@ namespace Domain.Bookings
         }
 
         public Booking OwnerEntity { get; set; }
-        public async Task SetSpace(long spaceId, CancellationToken cancellationToken)
+        public async Task SetTimeSlot(long slotId, CancellationToken cancellationToken)
         {
-            if (spaceId > 0)
+            if (slotId > 0)
             {
-                var space = await Space.GetAsync(spaceId, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
-                OwnerEntity.Space = space;
+                var slot = await TimeSlot.GetAsync(slotId, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
+                slot.IsBooked = true;
+                await slot.SaveAsync(cancellationToken);
+                OwnerEntity.TimeSlot = slot;
+                OwnerEntity.TotalAmount = slot.Tariff.Price;
+                OwnerEntity.Currency = slot.Tariff.Currency;
             }
         }
 

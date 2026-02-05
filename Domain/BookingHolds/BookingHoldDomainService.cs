@@ -1,11 +1,12 @@
 ﻿using Domain.Common.Interfaces;
 using Domain.MemberProfiles;
-using Domain.Spaces;
+using Domain.TimeSlots;
 using Domain.UnitOfWork.Uow;
 using Exceptions;
 using Microsoft.Extensions.Localization;
-using System.Threading.Tasks;
+using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Domain.BookingHolds
 {
@@ -24,12 +25,18 @@ namespace Domain.BookingHolds
         }
 
         public BookingHold OwnerEntity { get; set; }
-        public async Task SetSpace(long spaceId, CancellationToken cancellationToken)
+        public async Task SetTimeSlot(long slotId, CancellationToken cancellationToken)
         {
-            if (spaceId > 0)
+            if (slotId > 0)
             {
-                var space = await Space.GetAsync(spaceId, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
-                OwnerEntity.Space = space;
+                //using (var uow = _unitOfWorkManager.Begin(new SedUnitOfWorkOptions { IsTransactional = true, Timeout = TimeSpan.FromMinutes(5)}))
+                //{
+
+                //}
+                var slot = await TimeSlot.GetAsync(slotId, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
+                slot.IsHeld = true;
+                await slot.SaveAsync(cancellationToken);
+                OwnerEntity.TimeSlot = slot;
             }
         }
 

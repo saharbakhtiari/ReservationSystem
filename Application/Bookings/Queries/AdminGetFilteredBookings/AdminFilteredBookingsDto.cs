@@ -9,8 +9,6 @@ namespace Application.Bookings.Queries.AdminGetFilteredBookings
         public long Id { get; set; }
         public string SpaceTitle { get; set; }
         public string ProfileUserName { get; set; }
-        public DateTime StartAt { get; set; }
-        public DateTime EndAt { get; set; }
         public BookingStatus Status { get; set; }
         public decimal TotalAmount { get; set; }
         public Currency Currency { get; set; }
@@ -18,5 +16,8 @@ namespace Application.Bookings.Queries.AdminGetFilteredBookings
         public string PolicySnapshot { get; set; }
         public DateTime ConfirmedAt { get; set; }
         public DateTime CancelledAt { get; set; }
+        public TimeSpan StartAt { get; set; }
+        public TimeSpan EndAt { get; set; }
+        public DateTime SlotDate { get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace Application_Backend.Bookings.Commands.UpdateBooking
         {
             var tariff = await Booking.GetAsync(request.Id, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
             _mapper.Map(request, tariff);
-            await tariff.DomainService.SetSpace(request.SpaceId, cancellationToken);
+            await tariff.DomainService.SetTimeSlot(request.TimeSlotId, cancellationToken);
             await tariff.SaveAsync(cancellationToken);
             return Unit.Value;
         }

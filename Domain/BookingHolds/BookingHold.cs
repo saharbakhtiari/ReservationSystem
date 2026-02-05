@@ -2,6 +2,7 @@
 using Domain.Contract.Enums;
 using Domain.MemberProfiles;
 using Domain.Spaces;
+using Domain.TimeSlots;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,10 +11,8 @@ namespace Domain.BookingHolds
 {
     public class BookingHold : AuditableEntity
     {
-        public Space Space { get; set; } = null!;
+        public TimeSlot TimeSlot { get; set; } = null!;
         public MemberProfile Profile { get; set; }
-        public DateTime StartAt { get; set; }
-        public DateTime EndAt { get; set; }
         public string Token { get; set; }
         public DateTime ExpireAt { get; set; }
         public BookingHoldStatus Status { get; set; }

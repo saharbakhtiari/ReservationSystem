@@ -23,10 +23,10 @@ namespace Application_Backend.BookingHolds.Commands.UpdateBookingHold
 
         public async Task<Unit> Handle(UpdateBookingHoldCommand request, CancellationToken cancellationToken)
         {
-            var tariff = await BookingHold.GetAsync(request.Id, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
-            _mapper.Map(request, tariff);
-            await tariff.DomainService.SetSpace(request.SpaceId, cancellationToken);
-            await tariff.SaveAsync(cancellationToken);
+            var hold = await BookingHold.GetAsync(request.Id, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
+            _mapper.Map(request, hold);
+            await hold.DomainService.SetTimeSlot(request.SpaceId, cancellationToken);
+            await hold.SaveAsync(cancellationToken);
             return Unit.Value;
         }
     }

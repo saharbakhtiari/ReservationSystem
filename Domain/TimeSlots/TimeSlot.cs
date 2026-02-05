@@ -1,6 +1,5 @@
 ﻿using Domain.Common;
 using Domain.Contract.Enums;
-using Domain.MemberProfiles;
 using Domain.Spaces;
 using Domain.Tariffs;
 using System;
@@ -17,6 +16,7 @@ namespace Domain.TimeSlots
         public TimeSpan EndAt { get; set; }
         public DateTime SlotDate { get; set; }
         public bool IsBooked { get; set; }
+        public bool IsHeld { get; set; }
         public TimeSlotType Type { get; set; }
         public bool IsDeleted { get; set; }
 

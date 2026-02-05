@@ -2,6 +2,7 @@
 using AutoMapper;
 using Domain.Bookings;
 using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,11 +20,12 @@ namespace Application_Backend.Bookings.Commands.CreateBooking
 
         public async Task<long> Handle(CreateBookingCommand request, CancellationToken cancellationToken)
         {
-            var tariff = _mapper.Map<Booking>(request);
-            await tariff.DomainService.SetSpace(request.SpaceId, cancellationToken);
-            await tariff.DomainService.SetProfile(cancellationToken);
-            await tariff.SaveAsync(cancellationToken);
-            return tariff.Id;
+            var bookong = _mapper.Map<Booking>(request);
+            await bookong.DomainService.SetTimeSlot(request.TimeSlotId, cancellationToken);
+            await bookong.DomainService.SetProfile(cancellationToken);
+            bookong.ConfirmedAt = DateTime.Now;
+            await bookong.SaveAsync(cancellationToken);
+            return bookong.Id;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Application.BookingHolds.Commands.CreateBookingHold;
+﻿
+
+using Application.BookingHolds.Commands.CreateBookingHold;
 using AutoMapper;
 using Domain.BookingHolds;
 using Extensions;
@@ -27,8 +29,8 @@ namespace Application_Backend.BookingHolds.Commands.CreateBookingHold
             var configHoldTime = _configuration.GetSection("BookingHoldTime").Value.ToInt();
             var holdtime = configHoldTime == 0 ? 20 : configHoldTime;
             var hold = _mapper.Map<BookingHold>(request);
-            await hold.DomainService.SetSpace(request.SpaceId, cancellationToken);
             await hold.DomainService.SetProfile(cancellationToken);
+            await hold.DomainService.SetTimeSlot(request.TimeSlotId, cancellationToken);
             hold.ExpireAt = DateTime.Now.AddMinutes(holdtime);
             await hold.SaveAsync(cancellationToken);
             return hold.Id;
