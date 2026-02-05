@@ -5,6 +5,7 @@ using Domain.SpaceFiles;
 using Domain.Spaces;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,14 +13,18 @@ namespace Domain.Tariffs
 {
     public class Tariff : AuditableEntity
     {
+        [JsonIgnore]
         public Space Space { get; set; } = null!;
         public decimal Price { get; set; }
         public Currency Currency { get; set; }
         public TariffUnit Unit { get; set; }
         public string Rules { get; set; }
+        [JsonIgnore]
         public bool IsDeleted { get; set; }
 
+        [JsonIgnore]
         public ITariffDomainService DomainService { get; set; }
+        [JsonIgnore]
         public ITariffRepository Repository { get; set; }
 
         public Tariff()

@@ -29,6 +29,7 @@ namespace Infrastructure.TimeSlots
         {
             return GetAllAsQueryable()
                 .Include(a => a.Space)
+                .Include(a => a.Tariff)
                 .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted, cancellationToken);
         }
         public Task<PagedList<TOutput>> GetFilteredAsync<TOutput>(string filter, string sort, int PageNumber, int PageSize, CancellationToken cancellationToken)

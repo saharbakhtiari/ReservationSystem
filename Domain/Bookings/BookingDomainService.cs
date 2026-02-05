@@ -29,7 +29,7 @@ namespace Domain.Bookings
         {
             if (slotId > 0)
             {
-                var slot = await TimeSlot.GetAsync(slotId, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
+                var slot = await TimeSlot.GetIncludedAsync(slotId, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
                 slot.IsBooked = true;
                 await slot.SaveAsync(cancellationToken);
                 OwnerEntity.TimeSlot = slot;

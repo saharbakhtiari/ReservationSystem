@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Linq;
 using System.ComponentModel;
+using System.Text.Json;
 
 namespace Extensions;
 
@@ -60,4 +61,18 @@ public static class ObjectExtensions
     {
         return list.Contains(item);
     }
+
+    public static string ToJson(this object obj, bool indented = false)
+    {
+        if (obj == null)
+            return string.Empty;
+
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = indented
+        };
+
+        return JsonSerializer.Serialize(obj, options);
+    }
+
 }

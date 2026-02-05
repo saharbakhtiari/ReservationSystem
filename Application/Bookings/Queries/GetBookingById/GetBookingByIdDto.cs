@@ -25,6 +25,7 @@ namespace Application.Bookings.Queries.GetBooking
     }
     public class GetBookingByIdTariffDto
     {
+        public long Id { get; set; }
         public decimal Price { get; set; }
         public Currency Currency { get; set; }
         public TariffUnit Unit { get; set; }
