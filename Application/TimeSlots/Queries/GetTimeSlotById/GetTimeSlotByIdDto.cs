@@ -7,7 +7,7 @@ namespace Application.TimeSlots.Queries.GetTimeSlot
     {
         public long Id { get; set; }
         public GetTimeSlotByIdSpaceDto Space { get; set; }
-        public GetTimeSlotByIdProfileDto Profile { get; set; }
+        //public GetTimeSlotByIdProfileDto Profile { get; set; }
         public GetTimeSlotByIdTariffDto Tariff { get; set; }
 
         public TimeSpan StartAt { get; set; }
