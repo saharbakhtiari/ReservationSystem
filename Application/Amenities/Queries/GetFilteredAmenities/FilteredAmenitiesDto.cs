@@ -6,6 +6,8 @@ namespace Application.Amenities.Queries.GetFilteredAmenities
 {
     public class FilteredAmenitiesDto
     {
+        public long Id { get; set; }
+
         public string Title { get; set; }
         public FilteredAmenitiesFileDto Icon { get; set; }
     }

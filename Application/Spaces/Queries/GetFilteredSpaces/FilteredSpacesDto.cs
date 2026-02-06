@@ -9,6 +9,7 @@ namespace Application.Spaces.Queries.GetFilteredSpaces
 {
     public class FilteredSpacesDto
     {
+        public long Id { get; set; }
         public string Title { get; set; }
         public int Capacity { get; set; }
         public string Location { get; set; }

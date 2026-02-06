@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Application.BookingHolds.Commands.UpdateBookingHoldStatus;
 
 namespace WebAppBlazor.Server.Controllers.V1
 {
@@ -39,12 +40,12 @@ namespace WebAppBlazor.Server.Controllers.V1
             return Ok(id);
         }
 
-        //[HttpPut]
-        //public async Task<IActionResult> Update([FromBody] UpdateBookingHoldCommand dto)
-        //{
-        //    await Mediator.SendWithUow(dto);
-        //    return Ok(true);
-        //}
+        [HttpPut("updatestatus")]
+        public async Task<IActionResult> Update([FromBody] UpdateBookingHoldStatusCommand dto)
+        {
+            await Mediator.SendWithUow(dto);
+            return Ok(true);
+        }
 
         //[HttpDelete, Route("{Id}")]
         //public async Task<IActionResult> DeleteById(long id)

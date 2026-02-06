@@ -45,6 +45,10 @@ using Application.Tariffs.Commands.CreateTariff;
 using Application.Tariffs.Commands.UpdateTariff;
 using Application.Tariffs.Queries.GetFilteredTariffs;
 using Application.Tariffs.Queries.GetTariff;
+using Application.TimeSlots.Commands.CreateTimeSlot;
+using Application.TimeSlots.Commands.UpdateTimeSlot;
+using Application.TimeSlots.Queries.GetFilteredTimeSlots;
+using Application.TimeSlots.Queries.GetTimeSlot;
 using Application.UserManagers.Commands.CreateUser;
 using Application.UserManagers.Commands.EditPhoneNumber;
 using Application.UserManagers.Commands.EditRegisteredUser;
@@ -276,6 +280,18 @@ namespace Application_Backend.Common
                 .ForMember(a => a.EndAt, opt => opt.MapFrom(p => p.TimeSlot.EndAt))
                 .ForMember(a => a.SlotDate, opt => opt.MapFrom(p => p.TimeSlot.SlotDate));
 
+            #endregion
+
+            #region Timeslot
+            CreateMap<CreateTimeSlotCommand, TimeSlot>();
+            CreateMap<UpdateTimeSlotCommand, TimeSlot>();
+            CreateMap<TimeSlot, GetTimeSlotByIdDto>();
+            CreateMap<Space, GetTimeSlotByIdSpaceDto>();
+            CreateMap<Tariff, GetTimeSlotByIdTariffDto>();
+            CreateMap<MemberProfile, GetTimeSlotByIdProfileDto>();
+            CreateMap<TimeSlot, FilteredTimeSlotsDto>()
+                .ForMember(a => a.SpaceTitle, opt => opt.MapFrom(p => p.Space.Title));
+            
             #endregion
         }
 
