@@ -33,9 +33,9 @@ namespace Infrastructure.Spaces
         public Task<Space> GetIncludedAsync(long id, CancellationToken cancellationToken)
         {
             return GetAllAsQueryable()
-                .Include(a => a.Gallery)
+                .Include(a => a.Gallery.Where(a => !a.IsDeleted))
                 .Include(a => a.MainImage)
-                .Include(a => a.Amenities).ThenInclude(a => a.Icon)
+                .Include(a => a.Amenities.Where(a => !a.IsDeleted)).ThenInclude(a => a.Icon)
                 .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted, cancellationToken);
         }
         public Task<PagedList<TOutput>> GetFilteredAsync<TOutput>(string filter, string sort, int PageNumber, int PageSize, CancellationToken cancellationToken)
