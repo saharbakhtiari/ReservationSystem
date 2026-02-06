@@ -30,7 +30,10 @@ namespace Application_Backend.BookingHolds.Commands.CreateBookingHold
             var holdtime = configHoldTime == 0 ? 20 : configHoldTime;
             var hold = _mapper.Map<BookingHold>(request);
             await hold.DomainService.SetProfile(cancellationToken);
-            await hold.DomainService.SetTimeSlot(request.TimeSlotId, cancellationToken);
+            foreach(var item in request.Details)
+            {
+                await hold.DomainService.SetTimeSlot(item.TimeSlotId, item.Count, cancellationToken);
+            }
             hold.ExpireAt = DateTime.Now.AddMinutes(holdtime);
             await hold.SaveAsync(cancellationToken);
             return hold.Id;

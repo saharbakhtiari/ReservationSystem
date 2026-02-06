@@ -3,6 +3,7 @@ using Application_Backend.Common.Behaviours;
 using Application_Backend.Common.Notifications;
 using Application_Backend.Rules.Commands.AddRuleVersion;
 using Domain.Amenitys;
+using Domain.BookingHoldDetails;
 using Domain.BookingHolds;
 using Domain.Bookings;
 using Domain.CancellationPolicys;
@@ -67,6 +68,7 @@ namespace Application_Backend
             services.AddTransient(typeof(ITariffDomainService), typeof(TariffDomainService));
             services.AddTransient(typeof(IBookingDomainService), typeof(BookingDomainService));
             services.AddTransient(typeof(IBookingHoldDomainService), typeof(BookingHoldDomainService));
+            services.AddTransient(typeof(IBookingHoldDetailDomainService), typeof(BookingHoldDetailDomainService));
             services.AddTransient(typeof(ICancellationPolicyDomainService), typeof(CancellationPolicyDomainService));
             services.AddTransient(typeof(ITimeSlotDomainService), typeof(TimeSlotDomainService));
             services.AddNotificationConfig(options =>

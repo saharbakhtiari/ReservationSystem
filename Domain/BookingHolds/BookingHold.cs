@@ -1,9 +1,12 @@
-﻿using Domain.Common;
+﻿using Domain.BookingHoldDetails;
+using Domain.Common;
 using Domain.Contract.Enums;
 using Domain.MemberProfiles;
 using Domain.Spaces;
 using Domain.TimeSlots;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,12 +14,14 @@ namespace Domain.BookingHolds
 {
     public class BookingHold : AuditableEntity
     {
-        public TimeSlot TimeSlot { get; set; } = null!;
+        //public TimeSlot TimeSlot { get; set; } = null!;
         public MemberProfile Profile { get; set; }
         public string Token { get; set; }
         public DateTime ExpireAt { get; set; }
         public BookingHoldStatus Status { get; set; }
         public bool IsDeleted { get; set; }
+
+        public ICollection<BookingHoldDetail> Details { get; set; }
 
         public IBookingHoldDomainService DomainService { get; set; }
         public IBookingHoldRepository Repository { get; set; }
@@ -27,6 +32,7 @@ namespace Domain.BookingHolds
             Repository = ServiceLocator.ServiceProvider.GetService<IBookingHoldRepository>();
             DomainService.OwnerEntity = this;
             Repository.OwnerEntity = this;
+            Details = new HashSet<BookingHoldDetail>();
         }
 
         public override async Task SaveAsync(CancellationToken cancellationToken)

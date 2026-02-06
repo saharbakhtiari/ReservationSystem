@@ -1,10 +1,10 @@
-﻿using Domain.Common.Interfaces;
+﻿using Domain.BookingHoldDetails;
+using Domain.Common.Interfaces;
 using Domain.MemberProfiles;
 using Domain.TimeSlots;
 using Domain.UnitOfWork.Uow;
 using Exceptions;
 using Microsoft.Extensions.Localization;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,18 +25,22 @@ namespace Domain.BookingHolds
         }
 
         public BookingHold OwnerEntity { get; set; }
-        public async Task SetTimeSlot(long slotId, CancellationToken cancellationToken)
+        public async Task SetTimeSlot(long slotId, int count, CancellationToken cancellationToken)
         {
             if (slotId > 0)
             {
-                //using (var uow = _unitOfWorkManager.Begin(new SedUnitOfWorkOptions { IsTransactional = true, Timeout = TimeSpan.FromMinutes(5)}))
-                //{
-
-                //}
                 var slot = await TimeSlot.GetAsync(slotId, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
-                slot.IsHeld = true;
+                if(slot.AvailableCount < count)
+                {
+                    throw new UserFriendlyException(_localizer["Item is not available"]);
+                }
+                slot.AvailableCount -= count;
                 await slot.SaveAsync(cancellationToken);
-                OwnerEntity.TimeSlot = slot;
+                OwnerEntity.Details.Add(new BookingHoldDetail()
+                {
+                    Count = count,
+                    TimeSlot = slot
+                });
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using Domain.Contract.Enums;
 using System;
+using System.Collections.Generic;
 
 namespace Application.BookingHolds.Queries.GetBookingHold
 {
@@ -7,7 +8,7 @@ namespace Application.BookingHolds.Queries.GetBookingHold
     {
         public long Id { get; set; }
         public GetBookingHoldByIdProfileDto Profile { get; set; }
-        public GetBookingHoldByIdTimeSlotDto TimeSlot { get; set; }
+        public List<GetBookingHoldByIdTimeSlotDto> TimeSlots { get; set; }
         public string Token { get; set; }
         public DateTime ExpireAt { get; set; }
         public BookingHoldStatus Status { get; set; }
@@ -29,11 +30,12 @@ namespace Application.BookingHolds.Queries.GetBookingHold
     {
         public long Id { get; set; }
         public GetBookingHoldByIdSpaceDto Space { get; set; }
-        public GetBookingHoldByIdTariffDto Tariff { get; set; } 
+        public GetBookingHoldByIdTariffDto Tariff { get; set; }
         public TimeSpan StartAt { get; set; }
         public TimeSpan EndAt { get; set; }
         public DateTime SlotDate { get; set; }
         public TimeSlotType Type { get; set; }
+        public int Count { get; set; }
     }
     public class GetBookingHoldByIdProfileDto
     {

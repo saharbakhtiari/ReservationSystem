@@ -97,16 +97,9 @@
   "Password is empty": "گذرواژه خالی است",
   "Port is empty": "پورت خالی است",
   "Domain is empty": "دامنه خالی است",
-  "Person not found": "شخص مورد نظر یافت نشد",
-  "Department not found": "بخش مورد نظر یافت نشد",
-  "Post not found": "پست مورد نظر یافت نشد",
-  "You can't delete this department, because the Department has SubDepartments": "شما نمیتوانید این ساختار را حذف کنید زیرا ساختار موردنظر شامل زیر ساختار میباشد",
-  "Person doesn't have this post": "شخص دارای پست سازمانی مربوطه نمیباشد",
+  
+  //--------------------Reservation---------------------
   "Item not found": "آیتم مورد نظر یافت نشد",
-  "The parent department is different": "اداره دسته بندی والد نباید متفاوت باشد",
-  "Category has some subcategories": "دسته بندی مورد نظر شامل چند زیر دسته میباشد!",
-  "Parent Id is not valid": "شناسه مدیر بالادستی صحیح نیست",
-  "Order is not valid": "اولویت صحیح نیست",
-  "Category has some contents": "دسته بندی مورد نظر شامل چند محتوا میباشد."
+  "Item is not available": "آیتم مورد نظر ظرفیت ندارد"
 
 }

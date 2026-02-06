@@ -58,6 +58,7 @@ using Application.UserManagers.Commands.VerifyRegisteration;
 using AutoMapper;
 using Domain.AdvanceSearchs;
 using Domain.Amenitys;
+using Domain.BookingHoldDetails;
 using Domain.BookingHolds;
 using Domain.Bookings;
 using Domain.CancellationPolicys;
@@ -266,19 +267,50 @@ namespace Application_Backend.Common
             #endregion
 
             #region BookingHold
-            CreateMap<CreateBookingHoldCommand, BookingHold>();
+            CreateMap<CreateBookingHoldCommand, BookingHold>()
+                .ForMember(a => a.Details, opt => opt.Ignore());
             CreateMap<UpdateBookingHoldCommand, BookingHold>();
-            CreateMap<BookingHold, GetBookingHoldByIdDto>();
+            CreateMap<BookingHold, GetBookingHoldByIdDto>()
+                .ForMember(a => a.TimeSlots, opt => opt.MapFrom(p => p.Details)); 
             CreateMap<Space, GetBookingHoldByIdSpaceDto>();
             CreateMap<MemberProfile, GetBookingHoldByIdProfileDto>();
             CreateMap<Tariff, GetBookingHoldByIdTariffDto>();
-            CreateMap<TimeSlot, GetBookingHoldByIdTimeSlotDto>();
+            //CreateMap<TimeSlot, GetBookingHoldByIdTimeSlotDto>();
+            CreateMap<BookingHoldDetail, GetBookingHoldByIdTimeSlotDto>()
+                .ForMember(d => d.Id,
+                    opt => opt.MapFrom(s => s.TimeSlot.Id))
+                .ForMember(d => d.Space,
+                    opt => opt.MapFrom(s => s.TimeSlot.Space))
+                .ForMember(d => d.Tariff,
+                    opt => opt.MapFrom(s => s.TimeSlot.Tariff))
+                .ForMember(d => d.StartAt,
+                    opt => opt.MapFrom(s => s.TimeSlot.StartAt))
+                .ForMember(d => d.EndAt,
+                    opt => opt.MapFrom(s => s.TimeSlot.EndAt))
+                .ForMember(d => d.SlotDate,
+                    opt => opt.MapFrom(s => s.TimeSlot.SlotDate))
+                .ForMember(d => d.Type,
+                    opt => opt.MapFrom(s => s.TimeSlot.Type))
+                .ForMember(d => d.Count,
+                    opt => opt.MapFrom(s => s.Count)); ;
+            CreateMap<TimeSlot, FilteredBookingHoldTimeSlotDto>();
+            CreateMap<BookingHoldDetail, FilteredBookingHoldTimeSlotDto>()
+                .ForMember(d => d.Id,
+                    opt => opt.MapFrom(s => s.TimeSlot.Id))
+                .ForMember(d => d.SpaceTitle,
+                    opt => opt.MapFrom(s => s.TimeSlot.Space.Title))
+                .ForMember(d => d.StartAt,
+                    opt => opt.MapFrom(s => s.TimeSlot.StartAt))
+                .ForMember(d => d.EndAt,
+                    opt => opt.MapFrom(s => s.TimeSlot.EndAt))
+                .ForMember(d => d.SlotDate,
+                    opt => opt.MapFrom(s => s.TimeSlot.SlotDate))
+                .ForMember(d => d.Count,
+                    opt => opt.MapFrom(s => s.Count));
+                
             CreateMap<BookingHold, FilteredBookingHoldsDto>()
                 .ForMember(a => a.ProfileUserName, opt => opt.MapFrom(p => p.Profile.UserName))
-                .ForMember(a => a.SpaceTitle, opt => opt.MapFrom(p => p.TimeSlot.Space.Title))
-                .ForMember(a => a.StartAt, opt => opt.MapFrom(p => p.TimeSlot.StartAt))
-                .ForMember(a => a.EndAt, opt => opt.MapFrom(p => p.TimeSlot.EndAt))
-                .ForMember(a => a.SlotDate, opt => opt.MapFrom(p => p.TimeSlot.SlotDate));
+                .ForMember(a => a.TimeSlots, opt => opt.MapFrom(p => p.Details));
 
             #endregion
 
@@ -291,7 +323,7 @@ namespace Application_Backend.Common
             CreateMap<MemberProfile, GetTimeSlotByIdProfileDto>();
             CreateMap<TimeSlot, FilteredTimeSlotsDto>()
                 .ForMember(a => a.SpaceTitle, opt => opt.MapFrom(p => p.Space.Title));
-            
+
             #endregion
         }
 

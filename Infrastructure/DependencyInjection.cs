@@ -1,4 +1,5 @@
 ﻿using Domain.Amenitys;
+using Domain.BookingHoldDetails;
 using Domain.BookingHolds;
 using Domain.Bookings;
 using Domain.CancellationPolicys;
@@ -21,6 +22,7 @@ using Domain.UnitOfWork.Uow;
 using Domain.Users;
 using Extensions;
 using Infrastructure.Amenitys;
+using Infrastructure.BookingHoldDetails;
 using Infrastructure.BookingHolds;
 using Infrastructure.Bookings;
 using Infrastructure.CancellationPolicys;
@@ -97,6 +99,7 @@ namespace Infrastructure
             services.AddTransient<ITariffRepository, TariffRepository>();
             services.AddTransient<IBookingRepository, BookingRepository>();
             services.AddTransient<IBookingHoldRepository, BookingHoldRepository>();
+            services.AddTransient<IBookingHoldDetailRepository, BookingHoldDetailRepository>();
             services.AddTransient<ICancellationPolicyRepository, CancellationPolicyRepository>();
             services.AddTransient<ITimeSlotRepository, TimeSlotRepository>();
 
