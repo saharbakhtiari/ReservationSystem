@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace Domain.Common
 {
@@ -12,23 +13,25 @@ namespace Domain.Common
         /// <summary>
         /// UTC time for when the entity was created
         /// </summary>
+        [JsonIgnore]
         public DateTime? CreatedUtc { get; set; }
 
         /// <summary>
         /// User for when the entity was created
         /// </summary>
-       // public long CreatedUser { get; set; }
+        [JsonIgnore]
         public Guid? CreatedUser { get; set; }
 
         /// <summary>
         /// UTC time for when the entity was last modified
         /// </summary>
+        [JsonIgnore]
         public DateTime? LastModifiedUtc { get; set; }
 
         /// <summary>
         /// User for when the entity was last modified
         /// </summary>
-       // public long LastModifiedUser { get; set; }
+        [JsonIgnore]
         public Guid? LastModifiedUser { get; set; }
 
     }

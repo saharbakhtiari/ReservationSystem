@@ -2,6 +2,7 @@
 using Domain.SpaceFiles;
 using Domain.Spaces;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,12 +11,16 @@ namespace Domain.Amenitys
     public class Amenity : AuditableEntity
     {
         public string Title { get; set; } = null!;
+        [JsonIgnore]
         public SpaceFile Icon { get; set; }
+        [JsonIgnore]
         public bool IsDeleted { get; set; }
+        [JsonIgnore]
         public ICollection<Space> Spaces { get; set; }
 
-
+        [JsonIgnore]
         public IAmenityDomainService DomainService { get; set; }
+        [JsonIgnore]
         public IAmenityRepository Repository { get; set; }
 
         public Amenity()

@@ -3,6 +3,7 @@ using Domain.Contract.Enums;
 using Domain.Spaces;
 using Domain.Tariffs;
 using System;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,12 +16,15 @@ namespace Domain.TimeSlots
         public TimeSpan StartAt { get; set; }
         public TimeSpan EndAt { get; set; }
         public DateTime SlotDate { get; set; }
+        [JsonIgnore]
         public bool IsBooked { get; set; }
         public int AvailableCount { get; set; }
         public TimeSlotType Type { get; set; }
+        [JsonIgnore]
         public bool IsDeleted { get; set; }
-
+        [JsonIgnore]
         public ITimeSlotDomainService DomainService { get; set; }
+        [JsonIgnore]
         public ITimeSlotRepository Repository { get; set; }
 
         public TimeSlot()

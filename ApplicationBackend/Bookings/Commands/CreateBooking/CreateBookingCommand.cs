@@ -25,7 +25,7 @@ namespace Application_Backend.Bookings.Commands.CreateBooking
             await booking.DomainService.SetProfile(cancellationToken);
             await booking.DomainService.SetTimeSlot(request.TimeSlotId, cancellationToken);
             booking.ConfirmedAt = DateTime.Now;
-            booking.PriceSnapshot = booking.TimeSlot.Tariff.ToJson();
+            //booking.PriceSnapshot = booking.TimeSlot.Tariff.ToJson();
            // booking.PolicySnapshot = booking.TimeSlot.Space.ToJson();
             await booking.SaveAsync(cancellationToken);
             return booking.Id;

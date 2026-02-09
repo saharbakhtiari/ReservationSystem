@@ -243,12 +243,12 @@ namespace Application_Backend.Common
             CreateMap<MemberProfile, GetBookingByIdProfileDto>();
             CreateMap<Tariff, GetBookingByIdTariffDto>();
             CreateMap<TimeSlot, GetBookingByIdTimeSlotDto>();
-            CreateMap<Booking, FilteredBookingsDto>()
-                .ForMember(a => a.ProfileUserName, opt => opt.MapFrom(p => p.Profile.UserName))
-                .ForMember(a => a.SpaceTitle, opt => opt.MapFrom(p => p.TimeSlot.Space.Title))
-                .ForMember(a => a.StartAt, opt => opt.MapFrom(p => p.TimeSlot.StartAt))
-                .ForMember(a => a.EndAt, opt => opt.MapFrom(p => p.TimeSlot.EndAt))
-                .ForMember(a => a.SlotDate, opt => opt.MapFrom(p => p.TimeSlot.SlotDate));
+            //CreateMap<Booking, FilteredBookingsDto>()
+            //    .ForMember(a => a.ProfileUserName, opt => opt.MapFrom(p => p.Profile.UserName))
+            //    .ForMember(a => a.SpaceTitle, opt => opt.MapFrom(p => p.TimeSlot.Space.Title))
+            //    .ForMember(a => a.StartAt, opt => opt.MapFrom(p => p.TimeSlot.StartAt))
+            //    .ForMember(a => a.EndAt, opt => opt.MapFrom(p => p.TimeSlot.EndAt))
+            //    .ForMember(a => a.SlotDate, opt => opt.MapFrom(p => p.TimeSlot.SlotDate));
 
             #endregion
             #region Admin Booking
@@ -257,12 +257,12 @@ namespace Application_Backend.Common
             CreateMap<MemberProfile, AdminGetBookingByIdProfileDto>();
             CreateMap<Tariff, AdminGetBookingByIdTariffDto>();
             CreateMap<TimeSlot, AdminGetBookingByIdTimeSlotDto>();
-            CreateMap<Booking, AdminFilteredBookingsDto>()
-                .ForMember(a => a.ProfileUserName, opt => opt.MapFrom(p => p.Profile.UserName))
-                .ForMember(a => a.SpaceTitle, opt => opt.MapFrom(p => p.TimeSlot.Space.Title))
-                .ForMember(a => a.StartAt, opt => opt.MapFrom(p => p.TimeSlot.StartAt))
-                .ForMember(a => a.EndAt, opt => opt.MapFrom(p => p.TimeSlot.EndAt))
-                .ForMember(a => a.SlotDate, opt => opt.MapFrom(p => p.TimeSlot.SlotDate));
+            //CreateMap<Booking, AdminFilteredBookingsDto>()
+            //    .ForMember(a => a.ProfileUserName, opt => opt.MapFrom(p => p.Profile.UserName))
+            //    .ForMember(a => a.SpaceTitle, opt => opt.MapFrom(p => p.TimeSlot.Space.Title))
+            //    .ForMember(a => a.StartAt, opt => opt.MapFrom(p => p.TimeSlot.StartAt))
+            //    .ForMember(a => a.EndAt, opt => opt.MapFrom(p => p.TimeSlot.EndAt))
+            //    .ForMember(a => a.SlotDate, opt => opt.MapFrom(p => p.TimeSlot.SlotDate));
 
             #endregion
 

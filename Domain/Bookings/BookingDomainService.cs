@@ -27,15 +27,15 @@ namespace Domain.Bookings
         public Booking OwnerEntity { get; set; }
         public async Task SetTimeSlot(long slotId, CancellationToken cancellationToken)
         {
-            if (slotId > 0)
-            {
-                var slot = await TimeSlot.GetIncludedAsync(slotId, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
-                slot.IsBooked = true;
-                await slot.SaveAsync(cancellationToken);
-                OwnerEntity.TimeSlot = slot;
-                OwnerEntity.TotalAmount = slot.Tariff.Price;
-                OwnerEntity.Currency = slot.Tariff.Currency;
-            }
+            //if (slotId > 0)
+            //{
+            //    var slot = await TimeSlot.GetIncludedAsync(slotId, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
+            //    slot.IsBooked = true;
+            //    await slot.SaveAsync(cancellationToken);
+            //    OwnerEntity.TimeSlot = slot;
+            //    OwnerEntity.TotalAmount = slot.Tariff.Price;
+            //    OwnerEntity.Currency = slot.Tariff.Currency;
+            //}
         }
 
         public async Task SetProfile(CancellationToken cancellationToken)

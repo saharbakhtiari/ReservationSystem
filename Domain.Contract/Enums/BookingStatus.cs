@@ -3,10 +3,7 @@
     public enum BookingStatus
     {
         Unknown = 0,
-        PendngPayment = 1,
-        Confirmed = 3,
-        Cancelled = 4,
-        Expired = 5,
-        Completed = 6
+        Completed = 1,
+        Cancelled = 2,
     }
 }

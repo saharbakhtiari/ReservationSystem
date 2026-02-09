@@ -1,8 +1,10 @@
-﻿using Domain.Common;
+﻿using Domain.BookingDetails;
+using Domain.BookingHoldDetails;
+using Domain.Common;
 using Domain.Contract.Enums;
 using Domain.MemberProfiles;
-using Domain.TimeSlots;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,10 +12,7 @@ namespace Domain.Bookings
 {
     public class Booking : AuditableEntity
     {
-        public TimeSlot TimeSlot { get; set; } = null!;
         public MemberProfile Profile { get; set; }
-        public DateTime StartAt { get; set; }
-        public DateTime EndAt { get; set; }
         public BookingStatus Status { get; set; }
         public decimal TotalAmount { get; set; }
         public Currency Currency { get; set; }
@@ -22,6 +21,8 @@ namespace Domain.Bookings
         public DateTime ConfirmedAt { get; set; }
         public DateTime CancelledAt { get; set; }
         public bool IsDeleted { get; set; }
+        public long BookingHoldId { get; set; }
+        public ICollection<BookingHoldDetail> Details { get; set; }
 
         public IBookingDomainService DomainService { get; set; }
         public IBookingRepository Repository { get; set; }

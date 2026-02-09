@@ -4,8 +4,8 @@ using Domain.Contract.Enums;
 using Domain.SpaceFiles;
 using Domain.Tariffs;
 using Domain.TimeSlots;
-using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,14 +18,20 @@ namespace Domain.Spaces
         public string Location { get; set; }
         public SpaceType Type { get; set; }
         public ICollection<Amenity> Amenities { get; set; }
+        [JsonIgnore]
         public ICollection<SpaceFile> Gallery { get; set; }
+        [JsonIgnore]
         public ICollection<Tariff> Tariffs { get; set; }
+        [JsonIgnore]
         public ICollection<TimeSlot> TimeSlots { get; set; }
+        [JsonIgnore]
         public SpaceFile MainImage { get; set; }
         public string IsActive { get; set; }
+        [JsonIgnore]
         public bool IsDeleted { get; set; }
-
+        [JsonIgnore]
         public ISpaceDomainService DomainService { get; set; }
+        [JsonIgnore]
         public ISpaceRepository Repository { get; set; }
 
         public Space()
