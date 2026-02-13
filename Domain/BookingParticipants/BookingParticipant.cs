@@ -1,4 +1,5 @@
 ﻿using Domain.Amenitys;
+using Domain.Bookings;
 using Domain.Common;
 using Domain.Contract.Enums;
 using Domain.MemberProfiles;
@@ -13,6 +14,7 @@ namespace Domain.BookingParticipants
 {
     public class BookingParticipant : AuditableEntity
     {
+        public Booking Booking { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string NationalCode { get; set; }

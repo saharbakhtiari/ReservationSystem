@@ -1,21 +1,25 @@
 ﻿using Application.BookingHolds.Queries.GetBookingHold;
+using Domain.BookingHoldDetails;
+using Domain.BookingParticipants;
 using Domain.Contract.Enums;
 using System;
+using System.Collections.Generic;
 
 namespace Application.Bookings.Queries.GetBooking
 {
     public class GetBookingByIdDto
     {
         public long Id { get; set; }
-        public GetBookingByIdTimeSlotDto TimeSlot { get; set; }
         public GetBookingByIdProfileDto Profile { get; set; }
         public BookingStatus Status { get; set; }
         public decimal TotalAmount { get; set; }
         public Currency Currency { get; set; }
-        public string PriceSnapshot { get; set; }
-        public string PolicySnapshot { get; set; }
         public DateTime ConfirmedAt { get; set; }
         public DateTime CancelledAt { get; set; }
+        public bool IsDeleted { get; set; }
+        public long BookingHoldId { get; set; }
+        public List<GetBookingByIdTimeSlotDto> TimeSlots { get; set; }
+        public List<GetBookingByIdParticipantDto> Participants { get; set; }
     }
     public class GetBookingByIdSpaceDto
     {
@@ -39,6 +43,7 @@ namespace Application.Bookings.Queries.GetBooking
         public TimeSpan EndAt { get; set; }
         public DateTime SlotDate { get; set; }
         public TimeSlotType Type { get; set; }
+        public int Count { get; set; }
     }
     public class GetBookingByIdProfileDto
     {
@@ -46,6 +51,15 @@ namespace Application.Bookings.Queries.GetBooking
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string UserName { get; set; }
+        public string PhoneNumber { get; set; }
+    }
+
+    public class GetBookingByIdParticipantDto
+    {
+        public long Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string NationalCode { get; set; }
         public string PhoneNumber { get; set; }
     }
 }

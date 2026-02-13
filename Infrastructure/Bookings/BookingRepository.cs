@@ -32,6 +32,9 @@ namespace Infrastructure.Bookings
         {
             return GetAllAsQueryable()
                 .Include(a => a.Profile)
+                .Include(a => a.Details).ThenInclude(a => a.TimeSlot).ThenInclude(a => a.Space)
+                .Include(a => a.Details).ThenInclude(a => a.TimeSlot).ThenInclude(a => a.Tariff)
+                .Include(a => a.Participants)
                 .WhereIf(!isAdmin, r => r.Profile.UserId == _currentUserService.UserId)
                 .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted, cancellationToken);
         }

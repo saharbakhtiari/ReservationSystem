@@ -1,5 +1,6 @@
 ﻿using Domain.BookingDetails;
 using Domain.BookingHoldDetails;
+using Domain.BookingParticipants;
 using Domain.Common;
 using Domain.Contract.Enums;
 using Domain.MemberProfiles;
@@ -23,6 +24,7 @@ namespace Domain.Bookings
         public bool IsDeleted { get; set; }
         public long BookingHoldId { get; set; }
         public ICollection<BookingHoldDetail> Details { get; set; }
+        public ICollection<BookingParticipant> Participants { get; set; }
 
         public IBookingDomainService DomainService { get; set; }
         public IBookingRepository Repository { get; set; }
@@ -33,6 +35,8 @@ namespace Domain.Bookings
             Repository = ServiceLocator.ServiceProvider.GetService<IBookingRepository>();
             DomainService.OwnerEntity = this;
             Repository.OwnerEntity = this;
+            Details = new HashSet<BookingHoldDetail>();
+            Participants = new HashSet<BookingParticipant>();
         }
 
         public override async Task SaveAsync(CancellationToken cancellationToken)

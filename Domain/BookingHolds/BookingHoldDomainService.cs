@@ -1,10 +1,12 @@
 ﻿using Domain.BookingHoldDetails;
 using Domain.Common.Interfaces;
+using Domain.Contract.Enums;
 using Domain.MemberProfiles;
 using Domain.TimeSlots;
 using Domain.UnitOfWork.Uow;
 using Exceptions;
 using Microsoft.Extensions.Localization;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
