@@ -10,8 +10,11 @@ namespace Application.TimeSlots.Queries.GetFilteredTimeSlots
         public TimeSpan StartAt { get; set; }
         public TimeSpan EndAt { get; set; }
         public DateTime SlotDate { get; set; }
-        public bool IsBooked { get; set; }
-        public bool IsHeld { get; set; }
+        //public bool IsBooked { get; set; }
+        //public bool IsHeld { get; set; }
         public TimeSlotType Type { get; set; }
+        public int AvailableCount { get; set; }
+        public decimal Price { get; set; }
+        public Currency Currency { get; set; }
     }
 }

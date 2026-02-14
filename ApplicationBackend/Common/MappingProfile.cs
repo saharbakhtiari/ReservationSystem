@@ -379,7 +379,10 @@ namespace Application_Backend.Common
             CreateMap<Tariff, GetTimeSlotByIdTariffDto>();
             CreateMap<MemberProfile, GetTimeSlotByIdProfileDto>();
             CreateMap<TimeSlot, FilteredTimeSlotsDto>()
-                .ForMember(a => a.SpaceTitle, opt => opt.MapFrom(p => p.Space.Title));
+                .ForMember(a => a.SpaceTitle, opt => opt.MapFrom(p => p.Space.Title))
+                .ForMember(a => a.Currency, opt => opt.MapFrom(p => p.Tariff.Currency))
+                .ForMember(a => a.Price, opt => opt.MapFrom(p => p.Tariff.Price
+                ));
 
             #endregion
         }

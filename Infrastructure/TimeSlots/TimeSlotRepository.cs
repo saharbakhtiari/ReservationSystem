@@ -11,6 +11,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Domain.Contract.Enums;
+using System;
 
 namespace Infrastructure.TimeSlots
 {
@@ -41,6 +43,40 @@ namespace Infrastructure.TimeSlots
                 .OrderByIf(sort.IsNullOrWhiteSpace().Not(), sort)
                 .ProjectTo<TOutput>(mapper.ConfigurationProvider)
                 .ToPagedList(PageNumber, PageSize, cancellationToken);
+        }
+
+        public Task<PagedList<TOutput>> GetFilteredAsync<TOutput>(string filter,
+                                                                   string sort,
+                                                                   DateTime startDate,
+                                                                   DateTime? endDate,
+                                                                   TimeSlotType type,
+                                                                   TimeSpan? startAt,
+                                                                   TimeSpan? endAt,
+                                                                   int pageNumber,
+                                                                   int pageSize,
+                                                                   CancellationToken cancellationToken)
+        {
+            var mapper = ServiceLocator.ServiceProvider.GetService<IMapper>();
+            var endDateValue = endDate.HasValue ? endDate.Value : startDate;
+            var query = GetAllAsQueryable()
+                .Where(x => !x.IsDeleted
+                               && x.AvailableCount > 0
+                               && x.SlotDate.Date >= startDate.Date
+                               && x.SlotDate.Date <= endDateValue
+                               && x.Type == type)
+                .WhereIf(filter.IsNullOrWhiteSpace().Not(), r => r.Space.Title.Contains(filter));
+            // فقط برای حالت ساعتی
+            if (type == TimeSlotType.Hourly && startAt.HasValue && endAt.HasValue)
+            {
+                query = query.Where(x =>
+                                    x.StartAt <= startAt.Value &&
+                                    x.EndAt >= endAt.Value);
+            }
+
+            return query
+                .OrderByIf(sort.IsNullOrWhiteSpace().Not(), sort)
+                .ProjectTo<TOutput>(mapper.ConfigurationProvider)
+                .ToPagedList(pageNumber, pageSize, cancellationToken);
         }
 
         public async Task BulkInsertAsync(List<TimeSlot> timeSlots)
