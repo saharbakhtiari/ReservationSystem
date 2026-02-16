@@ -2,7 +2,7 @@
 
 namespace Application.AdminBookingHolds.Queries.GetAdminBookingHold
 {
-    public class GetAdminBookingHoldByIdQuery : IRequest<GetAdminBookingHoldByIdDto>
+    public class AdminGetBookingHoldByIdQuery : IRequest<AdminGetBookingHoldByIdDto>
     {
         public long Id { get; set; }
     }

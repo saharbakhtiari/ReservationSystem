@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using Domain.BookingHolds;
 using Domain.Common;
+using Domain.Common.Interfaces;
 using Extensions;
 using Infrastructure.Common;
 using Infrastructure.Persistence;
@@ -15,8 +16,11 @@ namespace Infrastructure.BookingHolds
 {
     public class BookingHoldRepository : GenericRepository<BookingHold, long>, IBookingHoldRepository
     {
-        public BookingHoldRepository(IDbContextProvider<ApplicationDbContext> dbContextProvider) : base(dbContextProvider)
+        private readonly ICurrentUserService _currentUserService;
+
+        public BookingHoldRepository(IDbContextProvider<ApplicationDbContext> dbContextProvider, ICurrentUserService currentUserService) : base(dbContextProvider)
         {
+            _currentUserService = currentUserService;
         }
 
         public Task<BookingHold> GetAsync(long id, CancellationToken cancellationToken)
@@ -24,19 +28,21 @@ namespace Infrastructure.BookingHolds
             return GetAllAsQueryable()
                 .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted, cancellationToken);
         }
-        public Task<BookingHold> GetIncludedAsync(long id, CancellationToken cancellationToken)
+        public Task<BookingHold> GetIncludedAsync(long id, bool isAdmin, CancellationToken cancellationToken)
         {
             return GetAllAsQueryable()
-                .Include(a => a.Details).ThenInclude(a => a.TimeSlot).ThenInclude(a=>a.Space)
-                .Include(a => a.Details).ThenInclude(a => a.TimeSlot).ThenInclude(a=>a.Tariff)
+                .Include(a => a.Details).ThenInclude(a => a.TimeSlot).ThenInclude(a => a.Space)
+                .Include(a => a.Details).ThenInclude(a => a.TimeSlot).ThenInclude(a => a.Tariff)
                 .Include(a => a.Profile)
+                .WhereIf(!isAdmin, r => r.Profile.UserId == _currentUserService.UserId)
                 .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted, cancellationToken);
         }
-        public Task<PagedList<TOutput>> GetFilteredAsync<TOutput>(string filter, string sort, int PageNumber, int PageSize, CancellationToken cancellationToken)
+        public Task<PagedList<TOutput>> GetFilteredAsync<TOutput>(string filter, string sort, int PageNumber, int PageSize, bool isAdmin, CancellationToken cancellationToken)
         {
             var mapper = ServiceLocator.ServiceProvider.GetService<IMapper>();
             return GetAllAsQueryable()
                 .Where(x => !x.IsDeleted)
+                .WhereIf(!isAdmin, r => r.Profile.UserId == _currentUserService.UserId)
                 .WhereIf(filter.IsNullOrWhiteSpace().Not(), r => r.Profile.PhoneNumber.Contains(filter) || r.Details.Any(d => d.TimeSlot.Space.Title.Contains(filter)))
                 .OrderByIf(sort.IsNullOrWhiteSpace().Not(), sort)
                 .ProjectTo<TOutput>(mapper.ConfigurationProvider)

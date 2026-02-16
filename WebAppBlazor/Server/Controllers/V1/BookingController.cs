@@ -48,12 +48,12 @@ namespace WebAppBlazor.Server.Controllers.V1
             return Ok(Booking);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateBookingCommand dto)
-        {
-            var id = await Mediator.SendWithUow(dto);
-            return Ok(id);
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> Create([FromBody] CreateBookingCommand dto)
+        //{
+        //    var id = await Mediator.SendWithUow(dto);
+        //    return Ok(id);
+        //}
 
         //[HttpPut]
         //public async Task<IActionResult> Update([FromBody] UpdateBookingCommand dto)

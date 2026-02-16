@@ -27,7 +27,7 @@ namespace Application_Backend.BookingHolds.Commands.UpdateBookingHold
         {
             if (request.Status == BookingHoldStatus.Completed)
             {
-                var hold = await BookingHold.GetIncludedAsync(request.Id, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
+                var hold = await BookingHold.GetIncludedAsync(request.Id,true, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
                 var currency = hold.Details.FirstOrDefault().TimeSlot?.Tariff?.Currency;
                 var totalAmount = hold.Details.Sum(a => a.TimeSlot.Tariff.Price);
                 //Create Booking

@@ -1,15 +1,13 @@
-﻿using Application.Amenities.Queries.GetFilteredAmenities;
+﻿using Application.AdminBookingHolds.Queries.GetAdminBookingHold;
 using Application.BookingHolds.Commands.CreateBookingHold;
-using Application.BookingHolds.Commands.DeleteBookingHold;
-using Application.BookingHolds.Commands.UpdateBookingHold;
-using Application.BookingHolds.Queries.GetFilteredBookingHolds;
+using Application.BookingHolds.Commands.UpdateBookingHoldStatus;
+using Application.BookingHolds.Queries.AdminGetFilteredBookingHolds;
 using Application.BookingHolds.Queries.GetBookingHold;
+using Application.BookingHolds.Queries.GetFilteredBookingHolds;
 using Application_Backend.Common;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Application.BookingHolds.Commands.UpdateBookingHoldStatus;
 
 namespace WebAppBlazor.Server.Controllers.V1
 {
@@ -30,6 +28,19 @@ namespace WebAppBlazor.Server.Controllers.V1
         public async Task<IActionResult> GetById(long id)
         {
             var bookingHold = await Mediator.SendWithUow(new GetBookingHoldByIdQuery() { Id = id });
+            return Ok(bookingHold);
+        }
+        [HttpPost("adminsearch")]
+        public async Task<IActionResult> AdminGetFiltered([FromBody] AdminGetFilteredBookingHoldsQuery dto)
+        {
+            var output = await Mediator.SendWithUow(dto);
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(output.MetaData));
+            return Ok(output);
+        }
+        [HttpGet("adminget")]
+        public async Task<IActionResult> AdminGetById(long id)
+        {
+            var bookingHold = await Mediator.SendWithUow(new AdminGetBookingHoldByIdQuery() { Id = id });
             return Ok(bookingHold);
         }
 

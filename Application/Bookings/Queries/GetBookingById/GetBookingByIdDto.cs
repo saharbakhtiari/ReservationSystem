@@ -1,7 +1,4 @@
-﻿using Application.BookingHolds.Queries.GetBookingHold;
-using Domain.BookingHoldDetails;
-using Domain.BookingParticipants;
-using Domain.Contract.Enums;
+﻿using Domain.Contract.Enums;
 using System;
 using System.Collections.Generic;
 
