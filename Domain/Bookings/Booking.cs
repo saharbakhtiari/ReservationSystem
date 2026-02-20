@@ -44,10 +44,10 @@ namespace Domain.Bookings
             await Repository.SaveAsync(cancellationToken);
         }
 
-        public static async Task<Booking> GetAsync(long id, CancellationToken cancellationToken)
+        public static async Task<Booking> GetAsync(long id, bool isAdmin, CancellationToken cancellationToken)
         {
             var repository = ServiceLocator.ServiceProvider.GetService<IBookingRepository>();
-            var item = await repository.GetAsync(id, cancellationToken);
+            var item = await repository.GetAsync(id,isAdmin, cancellationToken);
             if (item is not null)
             {
                 item.Repository = repository;

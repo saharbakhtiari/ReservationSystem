@@ -11,6 +11,8 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Application.Bookings.Queries.AdminGetFilteredBookings;
 using Application.Bookings.Queries.AdminGetBooking;
+using Application.Bookings.Commands.RevokeBooking;
+using Application.Bookings.Commands.AdminRevokeBooking;
 
 namespace WebAppBlazor.Server.Controllers.V1
 {
@@ -46,6 +48,20 @@ namespace WebAppBlazor.Server.Controllers.V1
         {
             var Booking = await Mediator.SendWithUow(new AdminGetBookingByIdQuery() { Id = id });
             return Ok(Booking);
+        }
+
+        [HttpPost("revoke")]
+        public async Task<IActionResult> Revoke([FromBody] RevokeBookingCommand dto)
+        {
+            await Mediator.SendWithUow(dto);
+            return Ok(true);
+        }
+
+        [HttpPost("adminrevoke")]
+        public async Task<IActionResult> AdminRevoke([FromBody] AdminRevokeBookingCommand dto)
+        {
+            await Mediator.SendWithUow(dto);
+            return Ok(true);
         }
 
         //[HttpPost]

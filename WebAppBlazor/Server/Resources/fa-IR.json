@@ -97,9 +97,10 @@
   "Password is empty": "گذرواژه خالی است",
   "Port is empty": "پورت خالی است",
   "Domain is empty": "دامنه خالی است",
-  
+
   //--------------------Reservation---------------------
   "Item not found": "آیتم مورد نظر یافت نشد",
-  "Item is not available": "آیتم مورد نظر ظرفیت ندارد"
+  "Item is not available": "آیتم مورد نظر ظرفیت ندارد",
+  "Bookig has already been revoked": "رزرو قبلا لغو شده است"
 
 }

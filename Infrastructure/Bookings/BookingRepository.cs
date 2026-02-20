@@ -8,6 +8,7 @@ using Infrastructure.Common;
 using Infrastructure.Persistence;
 using Infrastructure.UnitOfWork.EfCore.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,9 +24,10 @@ namespace Infrastructure.Bookings
             _currentUserService = currentUserService;
         }
 
-        public Task<Booking> GetAsync(long id, CancellationToken cancellationToken)
+        public Task<Booking> GetAsync(long id, bool isAdmin, CancellationToken cancellationToken)
         {
             return GetAllAsQueryable()
+                .WhereIf(!isAdmin, a => a.Profile.UserId == _currentUserService.UserId)
                 .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted, cancellationToken);
         }
         public Task<Booking> GetIncludedAsync(long id, bool isAdmin, CancellationToken cancellationToken)

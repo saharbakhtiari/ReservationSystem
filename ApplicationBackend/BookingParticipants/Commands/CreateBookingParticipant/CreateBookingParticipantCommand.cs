@@ -27,7 +27,7 @@ namespace Application_Backend.BookingParticipants.Commands.CreateBookingParticip
         public async Task<long> Handle(CreateBookingParticipantCommand request, CancellationToken cancellationToken)
         {
             var participant = _mapper.Map<BookingParticipant>(request);
-            var booking = await Booking.GetAsync(request.BookingId, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
+            var booking = await Booking.GetAsync(request.BookingId,false, cancellationToken) ?? throw new UserFriendlyException(_localizer["Item not found"]);
             participant.Booking = booking;
             await participant.SaveAsync(cancellationToken);
             return participant.Id;

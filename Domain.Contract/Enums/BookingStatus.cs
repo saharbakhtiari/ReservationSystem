@@ -4,6 +4,7 @@
     {
         Unknown = 0,
         Completed = 1,
-        Cancelled = 2,
+        UserRevoked = 7,
+        AdminRevoked = 3,
     }
 }

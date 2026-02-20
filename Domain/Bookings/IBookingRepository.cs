@@ -6,7 +6,7 @@ namespace Domain.Bookings
 {
     public interface IBookingRepository : IGenericRepository<Booking, long>
     {
-        Task<Booking> GetAsync(long id, CancellationToken cancellationToken);
+        Task<Booking> GetAsync(long id,bool isAdmin, CancellationToken cancellationToken);
         Task<PagedList<TOutput>> GetFilteredAsync<TOutput>(string filter, string sort, int PageNumber, int PageSize, bool isAdmin, CancellationToken cancellationToken);
         Task<Booking> GetIncludedAsync(long id, bool isAdmin, CancellationToken cancellationToken);
     }

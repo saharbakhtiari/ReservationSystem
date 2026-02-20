@@ -9,7 +9,5 @@
         Expired = 4,
         Cancelled = 5,
         FailedPayment = 6,
-        UserRevoked = 7,
-        AdminRevoked = 8,
     }
 }
