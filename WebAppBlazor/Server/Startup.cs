@@ -1,5 +1,6 @@
-using Application;
+﻿using Application;
 using Application_Backend;
+using Application_Backend.Jobs;
 using AspNetCoreRateLimit;
 using CustomLoggers;
 using DNTCaptcha.Core;
@@ -7,6 +8,7 @@ using Domain.Common;
 using Domain.Common.Interfaces;
 using Domain.UnitOfWork;
 using GhasedakSmsService;
+using Hangfire;
 using Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -21,6 +23,7 @@ using NotificationManagers;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
 using WebAppBlazor.Server.AppSettings;
 using WebAppBlazor.Server.Extensions;
 using WebAppBlazor.Server.Filters;
@@ -54,15 +57,6 @@ namespace WebAppBlazor.Server
 
             services.AddAutoMapper(typeof(MappingProfile), typeof(Infrastructure.Common.MappingProfile), typeof(Application_Backend.Common.MappingProfile));
 
-            // services
-            //.AddRabbitMQCoreClient(Configuration.GetSection("RabbitMQ"))
-            //.AddConsumer()
-            //.AddSystemTextJson(x =>
-            //{
-            //    x.PropertyNamingPolicy = null;
-            //});
-
-            // services.AddRabbitMQCoreClientConsumer(Configuration);
             #region --------------  Localizer  ---------------------
             services.AddLocalization();
             services.AddSingleton<LocalizationMiddleware>();
@@ -75,7 +69,6 @@ namespace WebAppBlazor.Server
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.ConfigureSwagger();
-
 
             services.AddAntiforgery(options =>
             {
@@ -110,7 +103,6 @@ namespace WebAppBlazor.Server
                     };
                 c.AddSecurityRequirement(requirement);
             });
-
 
             services.AddScoped<ICurrentUserService, CurrentUserService>(); // Inject UI services
             services.AddScoped<IRequestOrginService, RequestOrginService>(); // Inject UI services
@@ -150,55 +142,52 @@ namespace WebAppBlazor.Server
             // register stores
             services.AddInMemoryRateLimiting();
 
-
-            // configure the resolvers
-            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
-            services.AddControllers();
-
-
             services.AddDNTCaptcha(options =>
             {
-                options.UseSessionStorageProvider(); // -> It doesn't rely on the server or client's times. Also it's the safest one.
-                // options.UseMemoryCacheStorageProvider(); // -> It relies on the server's times. It's safer than the CookieStorageProvider.
-                options
-                    // .UseCookieStorageProvider(SameSiteMode.Strict) // -> It relies on the server and client's times. It's ideal for scalability, because it doesn't save anything in the server's memory.
-                    // .UseDistributedCacheStorageProvider(); // --> It's ideal for scalability using `services.AddStackExchangeRedisCache()` for instance.
-                    // .UseDistributedSerializationProvider();
-
-                    // Don't set this line (remove it) to use the installed system's fonts (FontName = "Tahoma").
-                    // Or if you want to use a custom font, make sure that font is present in the wwwroot/fonts folder and also use a good and complete font!
-                    //.UseCustomFont(Path.Combine(env.WebRootPath, "fonts", "IRANSans(FaNum)_Bold.ttf"))
-                    .AbsoluteExpiration(1)
-                    .RateLimiterPermitLimit(30) // for .NET 7x, Also you need to call app.UseRateLimiter() after calling app.UseRouting().
-                                                //.ShowExceptionsInResponse(env.IsDevelopment())
+                options.UseSessionStorageProvider();
+                options.AbsoluteExpiration(1)
+                    .RateLimiterPermitLimit(30)
                     .ShowThousandsSeparators(false)
                     .WithNoise(0.015f, 0.015f, 1, 0.0f)
                     .WithEncryptionKey("c9plK3nsf4KDqGgEqD3jkF7LrKPLTsVOMGnv")
                     .WithNonceKey("NETESCAPADES_NONCE")
-                    .InputNames(
-                                new DNTCaptchaComponent
-                                {
-                                    CaptchaHiddenInputName = "DNTCaptchaText",
-                                    CaptchaHiddenTokenName = "DNTCaptchaToken",
-                                    CaptchaInputName = "DNTCaptchaInputText",
-
-
-
-                                })
-
+                    .InputNames(new DNTCaptchaComponent
+                    {
+                        CaptchaHiddenInputName = "DNTCaptchaText",
+                        CaptchaHiddenTokenName = "DNTCaptchaToken",
+                        CaptchaInputName = "DNTCaptchaInputText",
+                    })
                     .Identifier("dntCaptcha");
-
             });
 
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+            services.AddControllers();
 
+            //--------------HangFire---------------
+            services.AddHangfire(configuration => configuration
+                    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                    .UseSimpleAssemblyNameTypeSerializer()
+                    .UseRecommendedSerializerSettings()
+                    .UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
 
+            // ثبت Hangfire Server به عنوان سرویس پس‌زمینه
+            services.AddHangfireServer(options =>
+            {
+                options.WorkerCount = 5; // تعداد پردازشگرهای همزمان
+                options.Queues = new[] { "default", "critical" }; // صف‌های پردازش
+                options.ServerName = "MyServer1"; // نام سرور (اختیاری)
+            });
+            //--------------HangFire---------------
+
+            // ثبت ExpiredBookingManger در DI
+            services.AddScoped<ExpiredBookingManger>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider sp, ILoggerFactory loggerFactory, IHostApplicationLifetime lifetime)
         {
             ServiceLocator.Initialize(sp.GetService<IServiceProviderProxy>());
-            //  app.StartRabbitMqCore(lifetime);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -206,9 +195,7 @@ namespace WebAppBlazor.Server
                 app.UseWebAssemblyDebugging();
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint($"/swagger/v1/swagger.json", $"CMR  Service v1");
-                    //  c.SwaggerEndpoint($"/swagger/v2/swagger.json", $"Teta Service v2");
-
+                    c.SwaggerEndpoint($"/swagger/v1/swagger.json", $"CMR Service v1");
                 });
 
                 #region --------------  Localizer  ---------------------
@@ -227,38 +214,39 @@ namespace WebAppBlazor.Server
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            //------------------------
-            // Configure the HTTP request pipeline.
 
             app.UseCors("EnableCORS");
 
-            //-------------------
-
-
-            //app.UseHttpsRedirection();
-            //app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
-
-            //loggerFactory.AddLog4Net();
 
             app.UseRouting();
 
             app.UseIpRateLimiting();
-            //app.UseClientRateLimiting();
             app.UseSession();
 
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseMiddleware<AuditMiddleware>();
 
+            // ========== تنظیمات Hangfire ==========
+            // استفاده از داشبورد Hangfire (اختیاری)
+            app.UseHangfireDashboard("/hangfire"); // میتونی آدرس دلخواه بدی
+
+            // ثبت Job زمانبندی شده (Recurring Job)
+            // این Job هر 5 دقیقه یکبار اجرا میشه
+            RecurringJob.AddOrUpdate<ExpiredBookingManger>(
+                "cancel-expired-bookings",
+                job => job.CancelExpiredBooking(CancellationToken.None),
+                "*/1 * * * *" // هر 5 دقیقه - میتونی زمان رو تغییر بدی
+            );
+
+            // اگه میخوای یه بار بلافاصله بعد از استارت اجرا بشه (اختیاری)
+             BackgroundJob.Enqueue<ExpiredBookingManger>(x => x.CancelExpiredBooking(CancellationToken.None));
+
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                //endpoints.MapFallbackToFile("index.html");
             });
-
-
         }
     }
 }

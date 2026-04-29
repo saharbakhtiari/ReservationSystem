@@ -3,11 +3,13 @@ using AutoMapper.QueryableExtensions;
 using Domain.BookingHolds;
 using Domain.Common;
 using Domain.Common.Interfaces;
+using Domain.Contract.Enums;
 using Extensions;
 using Infrastructure.Common;
 using Infrastructure.Persistence;
 using Infrastructure.UnitOfWork.EfCore.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,6 +30,18 @@ namespace Infrastructure.BookingHolds
             return GetAllAsQueryable()
                 .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted, cancellationToken);
         }
+
+        public Task<BookingHold> GetExpiredAsync(CancellationToken cancellationToken)
+        {
+            return GetAllAsQueryable()
+                .OrderBy(a => a.Id)
+                .FirstOrDefaultAsync(a => !a.IsDeleted
+                                          && a.ExpireAt < DateTime.Now 
+                                          && a.Status != BookingHoldStatus.Completed 
+                                          && a.Status != BookingHoldStatus.Expired
+                                          , cancellationToken);
+        }
+
         public Task<BookingHold> GetIncludedAsync(long id, bool isAdmin, CancellationToken cancellationToken)
         {
             return GetAllAsQueryable()

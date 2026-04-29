@@ -53,5 +53,10 @@ namespace Domain.BookingHolds
             OwnerEntity.Profile = profile;
         }
 
+        public async Task SetExpired(CancellationToken cancellationToken)
+        {
+            OwnerEntity.Status = BookingHoldStatus.Expired;
+        }
+
     }
 }
