@@ -31,5 +31,6 @@ namespace Infrastructure.UserAccount
         public DateTime LastActiveTimeUtc { get; set; }
         public LoginProvider LoginProvider { get; set; }
         public Guid UserKey { get; set; }
+        public bool IsLogin { get; set; }
     }
 }

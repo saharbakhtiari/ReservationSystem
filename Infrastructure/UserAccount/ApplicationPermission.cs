@@ -3,8 +3,14 @@ using System;
 
 namespace Infrastructure.UserAccount
 {
-    public class ApplicationPermission : IdentityPermission<Guid, ApplicationPermission, ApplicationUserRoles>
+    public class ApplicationPermission
+        : IdentityPermission<Guid, ApplicationPermission, ApplicationUserRoles>
     {
+        /// <summary>
+        /// کلید سیستمی یکتا (انگلیسی)
+        /// </summary>
+        public string Code { get; set; }
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -13,11 +19,12 @@ namespace Infrastructure.UserAccount
         }
 
         /// <summary>
-        /// Overloaded constructor, creates a new permission with entered name. 
+        /// سازنده اصلی جدید
         /// </summary>
-        /// <param name="roleName"></param>
-        public ApplicationPermission(string permissionName) : base(permissionName)
+        public ApplicationPermission(string code, string title) : base(title)
         {
+            Code = code;
+            Name = title; // Name برای نمایش فارسی
         }
     }
 }

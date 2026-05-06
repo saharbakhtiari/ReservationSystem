@@ -47,6 +47,11 @@ namespace Application_Backend.Common.Behaviours
                 {
                     throw new UnauthorizedAccessException();
                 }
+                var user = await _accountService.GetUserAsync(_currentUserService.UserName);
+                if (user.IsLogin.Not())
+                {
+                    throw new UnauthorizedAccessException();
+                }
                 var authorizeAttributesWithAccess = authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Roles) || !string.IsNullOrWhiteSpace(a.Permissions));
 
                 if (authorizeAttributesWithAccess.Any())

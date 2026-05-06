@@ -33,11 +33,11 @@ namespace Infrastructure.UserAccount
                 return result;
             }
             foreach (var permissionData in permData)
-              result.Add(permissionData.Id.ToString());        
+                result.Add(permissionData.Id.ToString());
 
             return result;
         }
-        
+
         public async Task<List<PermissionDto>> GetAllPermissionFull(Guid roleId, CancellationToken cancellationToken = default)
         {
             var result = new List<PermissionDto>();
@@ -51,13 +51,13 @@ namespace Infrastructure.UserAccount
                 result.Add(new()
                 {
                     Id = permissionData.Id,
-                    Name = permissionData.Name
+                    Title = permissionData.Name
 
                 });
 
             }
             return result;
- 
+
         }
     }
 

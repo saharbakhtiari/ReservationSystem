@@ -77,9 +77,18 @@ namespace Infrastructure.UserAccount.Permission
         }
         public virtual async Task<List<string>> GetExtraPermission(List<string> permissionsName, CancellationToken cancellationToken = default)
         {
-            var allExistPermision = await Permissions.AsNoTracking().ToListAsync(cancellationToken);
-            var uppercasePermission = permissionsName.Select(x => x.ToUpper()).ToList();
-            return permissionsName.Where(x => !allExistPermision.Any(z => z.Name.ToUpper() == x.ToUpper())).ToList();
+            var dbNames = await Permissions
+        .AsNoTracking()
+        .Select(x => x.Name)
+        .ToListAsync(cancellationToken);
+
+            var dbSet = dbNames
+                .Select(x => x?.Trim())
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            return permissionsName
+                .Where(x => !dbSet.Contains(x?.Trim()))
+                .ToList();
         }
         public virtual async Task AddToRoleAsync(TPermission permission, TRole role, CancellationToken cancellationToken = default)
         {

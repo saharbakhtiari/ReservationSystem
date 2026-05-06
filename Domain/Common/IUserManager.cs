@@ -64,5 +64,6 @@ namespace Domain.Common
         Task SignOut(Guid userId);
         Task<bool> IsValidToken(Guid userId, Guid userKey);
         Task<TokenDto> RefreshToken(string accessToken, string refreshToken);
+        Task<UserDto> GetUserAsync(string userName);
     }
 }

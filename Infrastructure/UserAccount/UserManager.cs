@@ -92,6 +92,7 @@ namespace Infrastructure.UserAccount
             var user = await _userManager.FindByNameAsync(newUser.UserName);
             if (user is null)
             {
+                newUser.PhoneNumberConfirmed = true;
                 var result = await userStoreProvider.CreateUserAsync(newUser);
                 if (!result.Succeeded)
                 {
@@ -103,6 +104,7 @@ namespace Infrastructure.UserAccount
                 if (user.EmailConfirmed.Not())
                 {
                     user.EmailConfirmed = true;
+                    user.PhoneNumberConfirmed = true;
                     var result = await _userManager.UpdateAsync(user);
                     if (!result.Succeeded)
                     {
@@ -168,7 +170,7 @@ namespace Infrastructure.UserAccount
             };
             await sms.DomainService.DeleteOlds(cancellationToken);
             await sms.SaveAsync(cancellationToken);
-            var res = await _smsService.Send(phoneNumber, code, cancellationToken);
+            var res = await _smsService.Send(phoneNumber, $"کد تایید : {code}", cancellationToken);
             if (!res)
             {
                 throw new UserFriendlyException($"ارسال پیام با خطا مواجه شد");
@@ -328,6 +330,7 @@ namespace Infrastructure.UserAccount
             }
 
             userData.PhoneNumberConfirmed = false;
+            userData.EmailConfirmed = false;
 
             var result = await _userManager.UpdateAsync(userData);
             if (!result.Succeeded)
@@ -585,10 +588,31 @@ namespace Infrastructure.UserAccount
             using (var uow = _uowManager.Begin(new SedUnitOfWorkOptions { IsTransactional = false, Timeout = TimeSpan.FromMinutes(1) }, requiresNew: true))
             {
                 var signInManager = ServiceLocator.ServiceProvider.GetService<SignInManager<ApplicationUser>>();
+                // 1) پیدا کردن یوزر
+                var user = await _userManager.FindByNameAsync(userName);
+                if (user == null)
+                    throw new UserFriendlyException("نام کاربری و یا رمز عبور صحیح نمی باشد");
+                if (!user.PhoneNumberConfirmed)
+                    throw new UserFriendlyException(" کاربر غیر فعال می باشد");
                 var signInResult = await signInManager.PasswordSignInAsync(userName, password, isPersistent: false, lockoutOnFailure: true);
 
                 if (signInResult.Succeeded)
                 {
+                    // 4) خواندن PanelMode از appsettings
+                    //var panelMode = _configuration["PanelMode"]; // "Admin" یا "User"
+                    //var isAdminInstance = string.Equals(panelMode, "Admin", StringComparison.OrdinalIgnoreCase);
+
+                    //if (isAdminInstance)
+                    //{
+
+
+                    //    var permissions = await _userManager.GetPermissionsAsync(user.Id);
+                    //    var hasAdminAccess = permissions.Contains(PermissionNames.AdminPanel_Access);
+
+                    //    if (!hasAdminAccess)
+                    //        throw new UserFriendlyException("نام کاربری و یا رمز عبور صحیح نمی باشد");
+                    //}
+
                     return;
                 }
                 else
@@ -634,6 +658,7 @@ namespace Infrastructure.UserAccount
                 _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
                 var expireTime = DateTime.Now.AddDays(refreshTokenValidityInDays);
                 user.RefreshTokenExpiryTime = expireTime;
+                user.IsLogin = true;
                 var result = await _userManager.UpdateAsync(user);
                 if (!result.Succeeded)
                 {
@@ -645,6 +670,25 @@ namespace Infrastructure.UserAccount
                     RefreshToken = refereshToken,
                     ExpiresTime = expireTime
                 };
+            }
+        }
+
+        public async Task<UserDto> GetUserAsync(string userName)
+        {
+            using (var uow = _uowManager.Begin(new SedUnitOfWorkOptions { IsTransactional = true, Timeout = TimeSpan.FromMinutes(1) }, requiresNew: true))
+            {
+                try
+                {
+                    var applicationUser = await _userManager.Users.FirstAsync(u => u.UserName == userName);
+                    return _mapper.Map<UserDto>(applicationUser);
+                }
+                catch
+                {
+
+                    return null;
+                }
+
+
             }
         }
 
@@ -731,47 +775,33 @@ namespace Infrastructure.UserAccount
             return _userManager.GetPermissionIdsAsync(userId, cancellationToken);
         }
 
-        public async Task<List<PermissionDto>> GetAllPermissionFullAsync(Guid userId, CancellationToken cancellationToken = default)
+        public async Task<List<PermissionDto>> GetAllPermissionFullAsync(
+     Guid userId,
+     CancellationToken cancellationToken = default)
         {
+            var permData = await _userManager.GetPermissionsFullAsync(userId, cancellationToken);
 
-            var result = new List<PermissionDto>();
-            var permData = _userManager.GetPermissionsFullAsync(userId, cancellationToken).Result;
             if (permData is null || permData.Count == 0)
-            {
-                return result;
-            }
-            foreach (var permissionData in permData)
-            {
-                result.Add(new()
-                {
-                    Id = permissionData.Id,
-                    Name = permissionData.Name
+                return new List<PermissionDto>();
 
-                });
-
-            }
-            return result;
+            return permData.Select(permissionData => new PermissionDto
+            {
+                Id = permissionData.Id,
+                Code = permissionData.Code,
+                Title = permissionData.Name
+            }).ToList();
         }
 
         public async Task<List<PermissionDto>> GetAllPermissionAsync(CancellationToken cancellationToken = default)
         {
-            var result = new List<PermissionDto>();
-            var permData = _permissionManager.GetAllPermission(cancellationToken).Result;
-            if (permData is null || permData.Count == 0)
-            {
-                return result;
-            }
-            foreach (var permissionData in permData)
-            {
-                result.Add(new()
-                {
-                    Id = permissionData.Id,
-                    Name = permissionData.Name
+            var permData = await _permissionManager.GetAllPermission(cancellationToken);
 
-                });
-
-            }
-            return result;
+            return permData.Select(permission => new PermissionDto
+            {
+                Id = permission.Id,
+                Code = permission.Code,
+                Title = permission.Name, // Name = Title فارسی
+            }).ToList();
         }
 
         public Task<bool> CheckPermissionAsync(Guid userId, string permission, CancellationToken cancellationToken = default)
@@ -883,6 +913,7 @@ namespace Infrastructure.UserAccount
 
                 var user = await _userManager.FindByIdAsync(userId.ToString());
                 user.UserKey = Guid.Empty;
+                user.IsLogin = false;
                 var result = await _userManager.UpdateAsync(user);
                 if (!result.Succeeded)
                 {
@@ -894,10 +925,10 @@ namespace Infrastructure.UserAccount
             }
         }
 
-        public async Task<bool> IsValidToken(Guid userId,Guid userKey)
+        public async Task<bool> IsValidToken(Guid userId, Guid userKey)
         {
             var applicationUser = await _userManager.FindByIdAsync(userId.ToString());
-            if(applicationUser.UserKey == userKey)
+            if (applicationUser.UserKey == userKey)
             {
                 return true;
             }

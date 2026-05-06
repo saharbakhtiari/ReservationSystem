@@ -1,10 +1,13 @@
 ﻿using Domain.Common;
+using Domain.Permissions;
 using Domain.Security;
+using EFCore.BulkExtensions;
 using Extensions;
 using Infrastructure.UserAccount;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,11 +23,11 @@ namespace Infrastructure.Persistence
         /// <returns></returns>
         public static async Task SeedDefaultUserAsync(IUserManager userManager, RoleManager<ApplicationUserRoles> roleManager)
         {
-            var userId = await userManager.FindUserIdByUserName("bakhtiari.s");
+            var userId = await userManager.FindUserIdByUserName("SystemAdmin");
             if (userId.HasValue.Not())
             {
-                await userManager.CreateUserAsync("bakhtiari.s", "", Domain.Users.LoginProvider.ActiveDirectory);
-                userId = await userManager.FindUserIdByUserName("bakhtiari.s");
+                await userManager.CreateUserAsync("SystemAdmin", "Seo@123#", Domain.Users.LoginProvider.BasicAuthentication);
+                userId = await userManager.FindUserIdByUserName("SystemAdmin");
             }
             if (userId.HasValue)
             {
@@ -57,22 +60,52 @@ namespace Infrastructure.Persistence
 
             }
         }
-        public static async Task SeedPermissionsAsync(MyPermissionManager permissionManager, ApplicationDbContext context)
+        public static async Task SeedPermissionsAsync(
+     MyPermissionManager permissionManager,
+     ApplicationDbContext context)
         {
-            /*
-            await permissionManager.DeleteNotExistPermission(PermissionProvider.Permissions.Select(x=>x.PermissionName).ToList());
-            var extraPermission = await permissionManager.GetExtraPermission(PermissionProvider.Permissions.Select(x=>x.PermissionName).ToList());
+            var dbPermissions = await context.Set<ApplicationPermission>()
+                .AsNoTracking()
+                .ToListAsync();
 
-            if (extraPermission.Count > 0)
+            var providerPermissions = PermissionProvider.Permissions;
+
+            var newPermissions = new List<ApplicationPermission>();
+            var updatedPermissions = new List<ApplicationPermission>();
+
+            foreach (var providerPermission in providerPermissions)
             {
-                var listExtraPermission = new List<ApplicationPermission>();
-                foreach (var item in extraPermission)
+                var existing = dbPermissions
+                    .FirstOrDefault(x => x.Code == providerPermission.Code);
+
+                if (existing == null)
                 {
-                    listExtraPermission.Add(new(item) { Id = Guid.NewGuid() });
+                    // فقط اگر وجود نداشت ایجاد کن
+                    newPermissions.Add(new ApplicationPermission
+                    {
+                        Id = Guid.NewGuid(),
+                        Code = providerPermission.Code,
+                        Name = providerPermission.Title
+                    });
                 }
-                await context.BulkInsertAsync(listExtraPermission);
+                else
+                {
+                    // اگر Title تغییر کرده، فقط آپدیت کن
+                    if (existing.Name != providerPermission.Title)
+                    {
+                        existing.Name = providerPermission.Title;
+                        updatedPermissions.Add(existing);
+                    }
+                }
             }
-            */
+
+            if (newPermissions.Any())
+                await context.BulkInsertAsync(newPermissions);
+
+            if (updatedPermissions.Any())
+                context.UpdateRange(updatedPermissions);
+
+            await context.SaveChangesAsync();
         }
         public static Task SeedSampleDataAsync(ApplicationDbContext context)
         {

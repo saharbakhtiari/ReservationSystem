@@ -10,53 +10,67 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.UserAccount
 {
-    public class MyPermissionManager : PermissionManager<Guid, ApplicationUser, ApplicationUserRoles, ApplicationPermission, ApplicationDbContext>
+    public class MyPermissionManager
+        : PermissionManager<Guid, ApplicationUser, ApplicationUserRoles, ApplicationPermission, ApplicationDbContext>
     {
         private readonly MyPermissionStore _permissionStore;
 
-        public MyPermissionManager(MyRoleManager<ApplicationUserRoles> roleManager , MyPermissionStore permissionStore) : base(roleManager, permissionStore)
+        public MyPermissionManager(
+            MyRoleManager<ApplicationUserRoles> roleManager,
+            MyPermissionStore permissionStore)
+            : base(roleManager, permissionStore)
         {
             _permissionStore = permissionStore;
         }
+
         public Task CreateAsync(ApplicationPermission permission, CancellationToken cancellationToken = default)
         {
             return _permissionStore.CreateAsync(permission, cancellationToken);
         }
-        public async Task CreateAsync( [NotNull] string permissionName, CancellationToken cancellationToken = default)
+
+        public async Task CreateAsync([NotNull] string code, string title, CancellationToken cancellationToken = default)
         {
-            if (permissionName == null)
-                throw new ArgumentNullException(nameof(permissionName));
-            
-            var permission = new ApplicationPermission(permissionName);
+            if (string.IsNullOrWhiteSpace(code))
+                throw new ArgumentNullException(nameof(code));
+
+            var permission = new ApplicationPermission(code, title);
 
             await _permissionStore.CreateAsync(permission, cancellationToken);
         }
-        public Task<List<ApplicationPermission>> GetNotExistPermission([NotNull] List<string> permissionsName, CancellationToken cancellationToken = default)
-        {
-            if (permissionsName is null)
-                throw new ArgumentNullException(nameof(permissionsName));
 
-            return _permissionStore.GetNotExistPermission(permissionsName, cancellationToken);
-        }
-        public Task<List<ApplicationPermission>> GetAllPermission( CancellationToken cancellationToken = default)
+        public Task<List<ApplicationPermission>> GetNotExistPermission(
+            [NotNull] List<string> codes,
+            CancellationToken cancellationToken = default)
         {
-           
-            return _permissionStore.GetAllPermissions( cancellationToken);
-        }
-        public Task DeleteNotExistPermission([NotNull] List<string> permissionsName, CancellationToken cancellationToken = default)
-        {
-            if (permissionsName is null)
-                throw new ArgumentNullException(nameof(permissionsName));
+            if (codes is null)
+                throw new ArgumentNullException(nameof(codes));
 
-            return _permissionStore.DeleteNotExistPermission(permissionsName, cancellationToken);
+            return _permissionStore.GetNotExistPermission(codes, cancellationToken);
         }
-        public Task<List<string>> GetExtraPermission([NotNull] List<string> permissionsName, CancellationToken cancellationToken = default)
-        {
-            if (permissionsName is null)
-                throw new ArgumentNullException(nameof(permissionsName));
 
-            return _permissionStore.GetExtraPermission(permissionsName, cancellationToken);
+        public Task<List<ApplicationPermission>> GetAllPermission(CancellationToken cancellationToken = default)
+        {
+            return _permissionStore.GetAllPermissions(cancellationToken);
+        }
+
+        public Task DeleteNotExistPermission(
+            [NotNull] List<string> codes,
+            CancellationToken cancellationToken = default)
+        {
+            if (codes is null)
+                throw new ArgumentNullException(nameof(codes));
+
+            return _permissionStore.DeleteNotExistPermission(codes, cancellationToken);
+        }
+
+        public Task<List<string>> GetExtraPermission(
+            [NotNull] List<string> codes,
+            CancellationToken cancellationToken = default)
+        {
+            if (codes is null)
+                throw new ArgumentNullException(nameof(codes));
+
+            return _permissionStore.GetExtraPermission(codes, cancellationToken);
         }
     }
-
 }
